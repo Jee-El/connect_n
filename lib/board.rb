@@ -13,4 +13,8 @@ class Board
   def valid_pick?(pick)
     !!@cols[pick]&.include?(nil)
   end
+
+  def filled?
+    !@cols.flatten.index(nil)
+  end
 end
