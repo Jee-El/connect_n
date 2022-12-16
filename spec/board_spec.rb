@@ -30,19 +30,19 @@ describe Board do
     context 'when the pick is valid' do
       let(:pick) { 4 }
 
-      context 'when it is in the range 1..7 and it is not filled' do
+      context 'when it is in the range 0..6 and it is not filled' do
         it { expect(board.valid_pick?(pick)).to be true }
       end
     end
 
     context 'when the pick is not valid' do
-      context 'when it is not in the range 1..7' do
+      context 'when it is not in the range 0..6' do
         let(:pick) { 8 }
 
         it { expect(board.valid_pick?(pick)).to be false }
       end
 
-      context 'when it is in the range 1..7 and it is filled' do
+      context 'when it is in the range 0..6 and it is filled' do
         let(:pick) { 5 }
 
         before do

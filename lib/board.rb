@@ -6,8 +6,11 @@ class Board
   end
 
   def drop_disc(pick, color)
-    pick -= 1
     row_index = @cols[pick].index(nil)
-    @cols[pick][row_index] = color if row_index
+    (@cols[pick][row_index] = color) if row_index
+  end
+
+  def valid_pick?(pick)
+    !!@cols[pick]&.include?(nil)
   end
 end
