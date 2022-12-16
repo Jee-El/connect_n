@@ -3,6 +3,7 @@ class Board
 
   def initialize
     @cols = Array.new(7) { Array.new(6) }
+    @color_to_emoji = {red: '🔴', yellow: '🟡', nil => '⚪'}
   end
 
   def drop_disc(pick, color)
@@ -16,5 +17,12 @@ class Board
 
   def filled?
     !@cols.flatten.index(nil)
+  end
+
+  def to_s
+    5.downto(0) do |i|
+      @cols.each { |col| print @color_to_emoji[col[i]] }
+      puts
+    end
   end
 end
