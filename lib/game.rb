@@ -17,27 +17,19 @@ class Game
     forward_diagonal_win?(color) || backward_diagonal_win?(color)
   end
 
+  def forward_diagonal_win?(color)
+
+  end
+
+  def backward_diagonal_win?(color)
+
+  end
+
   def horizontal_win?(color)
-    6.times do |i|
-      color_counter = 0
-      @board.cols.each do |col|
-        col[i] == color ? color_counter += 1 : color_counter = 0
-        return true if color_counter == 4
-      end
-    end
-    false
+    @board.cols.transpose.any? { |row| row.join.match? /(#{color}){4}/ }
   end
 
   def vertical_win?(color)
-    @board.cols.each do |col|
-      color_counter = 0
-      col.each do |cell|
-        break unless cell
-
-        cell == color ? color_counter += 1 : color_counter = 0
-        return true if color_counter == 4
-      end
-    end
-    false
+    @board.cols.any? { |col| col.join.match? /(#{color}){4}/ }
   end
 end
