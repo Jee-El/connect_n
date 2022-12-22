@@ -4,52 +4,129 @@ require_relative '../lib/game'
 require_relative '../lib/board'
 
 describe Game do
-  subject(:game) { described_class.new(Board.new) }
+  subject(:game) { described_class.new(board, human_player, computer_player) }
+
+  let(:board) { Board.new }
+  let(:human_player) { instance_double(HumanPlayer) }
+  let(:computer_player) { instance_double(ComputerPlayer) }
+
   let(:red) { :red }
   let(:yellow) { :yellow }
 
   describe '#over?' do
-    context 'when 4 red discs are aligned horizontally' do
-      let(:picks) { [1, 2, 4] }
-      let(:winning_pick) { 3 }
+    context 'when no red disc is on the bounds of the board' do
+      let(:yellow_picks) { [*0..6, 0, 6] }
 
       before do
-        picks.each { |pick| game.board.drop_disc(pick, red) }
-      end
-
-      it do
-        color_and_coordinates = game.board.drop_disc(winning_pick, red)
-        expect(game.over?(*color_and_coordinates)).to be true
-      end
-    end
-
-    context 'when 4 yellow discs are aligned vertically' do
-      let(:pick) { 3 }
-      let(:winning_pick) { 3 }
-
-      before do
-        3.times { game.board.drop_disc(pick, yellow) }
-      end
-
-      it do
-        color_and_coordinates = game.board.drop_disc(winning_pick, yellow)
-        expect(game.over?(*color_and_coordinates)).to be true
-      end
-    end
-
-    context 'when 4 yellow tokens are aligned diagonally' do
-      let(:red_picks) { [2, 3, 3, 4, 4, 4] }
-      let(:yellow_picks) { [*2..4] }
-      let(:winning_yellow_pick) { 1 }
-
-      before do
-        red_picks.each { |red_pick| game.board.drop_disc(red_pick, red) }
         yellow_picks.each { |yellow_pick| game.board.drop_disc(yellow_pick, yellow) }
       end
 
-      it do
-        color_and_coordinates = game.board.drop_disc(winning_yellow_pick, yellow)
-        expect(game.over?(*color_and_coordinates)).to be true
+      context 'for horizonal' do
+        let(:red_picks) { [1, 2, 4] }
+
+        before { red_picks.each { |red_pick| game.board.drop_disc(red_pick, red) } }
+
+        context 'when 4 red discs are connected' do
+          let(:winning_pick) { 3 }
+  
+          it 'is over' do
+            color, col, row = game.board.drop_disc(winning_pick, red)
+            expect(game.over?(color, col, row)).to be true
+          end
+        end
+  
+        context 'when 4 red discs are NOT connected' do
+          let(:not_winning_pick) { 5 }
+  
+          it 'is not over' do
+            color, col, row = game.board.drop_disc(not_winning_pick, red)
+            expect(game.over?(color, col, row)).to be false
+          end
+        end
+      end
+
+      context 'for vertical' do
+        let(:red_picks) { [5] * 3 }
+
+        before { red_picks.each { |red_pick| game.board.drop_disc(red_pick, red) } }
+
+        context 'when 4 red discs are connected' do
+          let(:winning_pick) { 5 }
+  
+          it 'is over' do
+            color, col, row = game.board.drop_disc(winning_pick, red)
+            expect(game.over?(color, col, row)).to be true
+          end
+        end
+  
+        context 'when 4 red discs are NOT connected' do
+          let(:not_winning_pick) { 5 }
+  
+          before do
+            game.board.drop_disc(red_picks.first, yellow)
+          end
+  
+          it 'is not over' do
+            color, col, row = game.board.drop_disc(not_winning_pick, red)
+            expect(game.over?(color, col, row)).to be false
+          end
+        end
+      end
+
+      context 'for diagonal' do
+        context 'for forward-diagonal' do
+          before do
+            (1..3).each { |i| i.times { game.board.drop_disc(i + 1, yellow) } }
+            red_picks.each { |red_pick| game.board.drop_disc(red_pick, red) }
+          end
+
+          context 'when 4 red discs are connected' do
+            let(:red_picks) { [1, 2, 4] }
+            let(:winning_pick) { 3 }
+    
+            it 'is over' do
+              color, col, row = game.board.drop_disc(winning_pick, red)
+              expect(game.over?(color, col, row)).to be true
+            end
+          end
+
+          context 'when 4 red discs are NOT connected' do
+            let(:red_picks) { [1, 2] }
+            let(:not_winning_pick) { 4 }
+
+            it 'is not over' do
+              color, col, row = game.board.drop_disc(not_winning_pick, red)
+              expect(game.over?(color, col, row)).to be false
+            end
+          end
+        end
+
+        context 'for backward-diagonal' do
+          before do
+            (1..3).each { |i| (4 - i).times { game.board.drop_disc(i, yellow) } }
+            red_picks.each { |red_pick| game.board.drop_disc(red_pick, red) }
+          end
+
+          context 'when 4 red discs are connected' do
+            let(:red_picks) { [1, 2, 4] }
+            let(:winning_pick) { 3 }
+    
+            it 'is over' do
+              color, col, row = game.board.drop_disc(winning_pick, red)
+              expect(game.over?(color, col, row)).to be true
+            end
+          end
+
+          context 'when 4 red discs are NOT connected' do
+            let(:red_picks) { [1, 2] }
+            let(:not_winning_pick) { 4 }
+
+            it 'is not over' do
+              color, col, row = game.board.drop_disc(not_winning_pick, red)
+              expect(game.over?(color, col, row)).to be false
+            end
+          end
+        end
       end
     end
 
@@ -67,8 +144,8 @@ describe Game do
         end
 
         it do
-          color_and_coordinates = game.board.drop_disc(draw_pick, yellow)
-          expect(game.over?(*color_and_coordinates)).to be true
+          color, col, row = game.board.drop_disc(draw_pick, yellow)
+          expect(game.over?(color, col, row)).to be true
         end
       end
 
