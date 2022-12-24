@@ -8,10 +8,15 @@ describe Board do
 
   describe '#drop_disc' do
     let(:pick) { 4 }
+    let(:row) { 0 }
 
     context 'when the pick is not filled' do
       it 'drops a disc' do
         expect { board.drop_disc(pick, color) }.to change { board.cols[pick].count(nil) }.by(-1)
+      end
+
+      it 'returns an array of color & coordinates of the pick' do
+        expect(board.drop_disc(pick, color)).to contain_exactly(color, pick, row)
       end
     end
 
@@ -65,6 +70,81 @@ describe Board do
 
     context 'when the board is not filled' do
       it { expect(board.filled?).to be false }
+    end
+  end
+
+  describe '#at' do
+    context 'when it receives a negative col value & a positive row value' do
+      let(:negative_col) { -3 }
+      let(:positive_row) { 4 }
+
+      it do
+        cell = board.at(negative_col, positive_row)
+        expect(cell).to be_nil
+      end
+    end
+
+    context 'when it receives a positive col value and a negative row value' do
+      let(:positive_col) { 5 }
+      let(:negative_row) { -74 }
+
+      it do
+        cell = board.at(positive_col, negative_row)
+        expect(cell).to be_nil
+      end
+    end
+
+    context 'when it receives a negative col value and a negative row value' do
+      let(:negative_col) { -32 }
+      let(:negative_row) { -2 }
+
+      it do
+        cell = board.at(negative_col, negative_row)
+        expect(cell).to be_nil
+      end
+    end
+
+    context 'when it receives a positive col value and a positive row value' do
+      context 'when both the col value and row value are respectively IN ranges 0..6 0..5' do
+        let(:in_range_positive_col) { 0 }
+        let(:in_range_positive_row) { 2 }
+
+        it do
+          cell = board.at(in_range_positive_col, in_range_positive_row)
+          expected_cell = board.cols.dig(in_range_positive_col, in_range_positive_row)
+          expect(cell).to eq(expected_cell)
+        end
+      end
+
+      context 'when both the col value and row value are respectively OUT of ranges 0..6 0..5' do
+        let(:out_of_range_positive_col) { 12 }
+        let(:out_of_range_positive_row) { 30 }
+
+        it do
+          cell = board.at(out_of_range_positive_col, out_of_range_positive_row)
+          expect(cell).to be_nil
+        end
+      end
+
+      context 'when the col value is OUT of range 0..6' do
+        let(:out_of_range_positive_col) { 9 }
+        let(:positive_row) { 4 }
+
+        it do
+          cell = board.at(out_of_range_positive_col, positive_row)
+          expect(cell).to be_nil
+        end
+      end
+
+      context 'when the row value is OUT of range 0..5' do
+        let(:positive_col) { 5 }
+        let(:out_of_range_positive_row) { 7 }
+
+        it do
+          cell = board.at(positive_col, out_of_range_positive_row)
+          expect(cell).to be_nil
+        end
+      end
     end
   end
 end
