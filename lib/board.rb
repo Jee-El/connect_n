@@ -23,7 +23,9 @@ class Board
   end
 
   def display
-    (cols.length - 1).downto(0) { |i| cols.each { |col| print @color_to_emoji[col[i]] } and puts }
+    (cols.first.length - 1).downto(0) do |i|
+      cols.each { |col| print @color_to_emoji[col[i]] } and puts
+    end
   end
 
   def at(col, row)
