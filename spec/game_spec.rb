@@ -17,9 +17,15 @@ describe Game do
     context 'when a player has won' do
       before { allow(game).to receive(:win?).and_return(true) }
       
-      it { expect(game).to receive(:win?) }
-      
-      it { expect(board).not_to receive(:filled?) }
+      it do
+        expect(game).to receive(:win?)
+        game.over?
+      end
+
+      it do
+        expect(board).not_to receive(:filled?)
+        game.over?
+      end
 
       it { expect(game.over?).to be true }
     end
@@ -29,29 +35,40 @@ describe Game do
 
       context 'when the board is filled' do
         before { allow(board).to receive(:filled?).and_return(true) }
-          
-        it { expect(game).to receive(:win?) }
-        
-        it { expect(board).to receive(:filled?) }
 
-        it { expect(game.over?).to be true }
+        it do
+          expect(game).to receive(:win?)
+          game.over?
         end
+  
+        it do
+          expect(board).to receive(:filled?)
+          game.over?
+        end
+  
+        it { expect(game.over?).to be true }
       end
 
       context 'when the board is not filled' do
         before { allow(board).to receive(:filled?).and_return(false) }
 
-        it { expect(game).to receive(:win?) }
-
-        it { expect(board).to receive(:filled?) }
-
+        it do
+          expect(game).to receive(:win?)
+          game.over?
+        end
+  
+        it do
+          expect(board).to receive(:filled?)
+          game.over?
+        end
+  
         it { expect(game.over?).to be false }
       end
     end
   end
 
   describe '#win?' do
-    context 'when no red disc is on the bounds of the board' do
+    context 'when no red disc is on the first or last col of the board' do
       let(:yellow_picks) { [*0..6, 0, 6] }
 
       before do
@@ -240,6 +257,20 @@ describe Game do
             end
           end
         end
+      end
+    end
+
+    context 'when there are red discs on the first and last cols of the board' do
+      let(:red_picks) { [0, 5, 6] }
+      let(:not_winning_red_pick) { 1 }
+
+      before do
+        red_picks.each { |red_pick| board.drop_disc(red_pick, red) }
+      end
+
+      it 'does not go around the board' do
+        color, col, row = board.drop_disc(not_winning_red_pick, red)
+        expect(game.win?(color, col, row)).to be false
       end
     end
   end
