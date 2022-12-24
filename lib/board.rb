@@ -7,22 +7,28 @@ class Board
   end
 
   def drop_disc(pick, color)
-    row_index = @cols[pick].index(nil)
-    (@cols[pick][row_index] = color) if row_index
+    row = cols[pick].index(nil)
+    if row
+      @cols[pick][row] = color 
+      [color, pick, row]
+    end
   end
 
   def valid_pick?(pick)
-    !!@cols[pick]&.include?(nil)
+    !!cols[pick]&.include?(nil)
   end
 
   def filled?
-    !@cols.flatten.index(nil)
+    !cols.flatten.index(nil)
   end
 
-  def to_s
-    5.downto(0) do |i|
-      @cols.each { |col| print @color_to_emoji[col[i]] }
-      puts
-    end
+  def display
+    (cols.length - 1).downto(0) { |i| cols.each { |col| print @color_to_emoji[col[i]] } and puts }
+  end
+
+  def at(col, row)
+    return if [col, row].any?(&:negative?)
+
+    cols.dig(col, row)
   end
 end
