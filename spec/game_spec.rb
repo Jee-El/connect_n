@@ -7,27 +7,27 @@ describe Game do
   subject(:game) { described_class.new(board, human_player, computer_player) }
 
   let(:board) { Board.new }
-  let(:human_player) { instance_double(HumanPlayer) }
-  let(:computer_player) { instance_double(ComputerPlayer) }
+  let(:human_player) { double('human_player') }
+  let(:computer_player) { double('computer_player') }
 
   let(:red) { :red }
   let(:yellow) { :yellow }
 
-  describe "#over?" do
+  describe '#over?' do
     context 'when a player has won' do
       before { allow(game).to receive(:win?).and_return(true) }
-      
+
       it do
         expect(game).to receive(:win?)
-        game.over?
+        game.over?(board)
       end
 
       it do
         expect(board).not_to receive(:filled?)
-        game.over?
+        game.over?(board)
       end
 
-      it { expect(game.over?).to be true }
+      it { expect(game.over?(board)).to be true }
     end
 
     context 'when a player has not won' do
@@ -38,15 +38,15 @@ describe Game do
 
         it do
           expect(game).to receive(:win?)
-          game.over?
+          game.over?(board)
         end
-  
+
         it do
           expect(board).to receive(:filled?)
-          game.over?
+          game.over?(board)
         end
-  
-        it { expect(game.over?).to be true }
+
+        it { expect(game.over?(board)).to be true }
       end
 
       context 'when the board is not filled' do
@@ -54,15 +54,15 @@ describe Game do
 
         it do
           expect(game).to receive(:win?)
-          game.over?
+          game.over?(board)
         end
-  
+
         it do
           expect(board).to receive(:filled?)
-          game.over?
+          game.over?(board)
         end
-  
-        it { expect(game.over?).to be false }
+
+        it { expect(game.over?(board)).to be false }
       end
     end
   end
@@ -81,40 +81,40 @@ describe Game do
         context 'when 4 red discs are connected' do
           let(:red_picks) { [1, 2, 4] }
           let(:winning_pick) { 3 }
-  
+
           it 'returns true' do
             color, col, row = board.drop_disc(winning_pick, red)
-            expect(game.win?(color, col, row)).to be true
+            expect(game.win?(board, color, col, row)).to be true
           end
         end
-  
+
         context 'when only 3 red discs are connected' do
           let(:red_picks) { [1, 2] }
           let(:not_winning_red_pick) { 3 }
-  
+
           it do
             color, col, row = board.drop_disc(not_winning_red_pick, red)
-            expect(game.win?(color, col, row)).to be false
+            expect(game.win?(board, color, col, row)).to be false
           end
         end
 
         context 'when only 2 red discs are connected' do
           let(:red_picks) { [1] }
           let(:not_winning_red_pick) { 2 }
-  
+
           it do
             color, col, row = board.drop_disc(not_winning_red_pick, red)
-            expect(game.win?(color, col, row)).to be false
+            expect(game.win?(board, color, col, row)).to be false
           end
         end
 
         context 'when there is only 1 red disc' do
           let(:red_picks) { [] }
           let(:not_winning_red_pick) { 1 }
-  
+
           it do
             color, col, row = board.drop_disc(not_winning_red_pick, red)
-            expect(game.win?(color, col, row)).to be false
+            expect(game.win?(board, color, col, row)).to be false
           end
         end
       end
@@ -125,40 +125,40 @@ describe Game do
         context 'when 4 red discs are connected' do
           let(:red_picks) { [5] * 3 }
           let(:winning_pick) { 5 }
-  
+
           it do
             color, col, row = board.drop_disc(winning_pick, red)
-            expect(game.win?(color, col, row)).to be true
+            expect(game.win?(board, color, col, row)).to be true
           end
         end
-  
-        context 'when only 3 red discs are connected' do  
+
+        context 'when only 3 red discs are connected' do
           let(:red_picks) { [5] * 2 }
           let(:not_winning_red_pick) { 5 }
 
           it do
             color, col, row = board.drop_disc(not_winning_red_pick, red)
-            expect(game.win?(color, col, row)).to be false
+            expect(game.win?(board, color, col, row)).to be false
           end
         end
 
-        context 'when only 2 red discs are connected' do  
+        context 'when only 2 red discs are connected' do
           let(:red_picks) { [5] }
           let(:not_winning_red_pick) { 5 }
 
           it do
             color, col, row = board.drop_disc(not_winning_red_pick, red)
-            expect(game.win?(color, col, row)).to be false
+            expect(game.win?(board, color, col, row)).to be false
           end
         end
 
-        context 'when there is only 1 red disc' do  
+        context 'when there is only 1 red disc' do
           let(:red_picks) { [] }
           let(:not_winning_red_pick) { 5 }
 
           it do
             color, col, row = board.drop_disc(not_winning_red_pick, red)
-            expect(game.win?(color, col, row)).to be false
+            expect(game.win?(board, color, col, row)).to be false
           end
         end
       end
@@ -173,10 +173,10 @@ describe Game do
           context 'when 4 red discs are connected' do
             let(:red_picks) { [1, 2, 4] }
             let(:winning_pick) { 3 }
-    
+
             it do
               color, col, row = board.drop_disc(winning_pick, red)
-              expect(game.win?(color, col, row)).to be true
+              expect(game.win?(board, color, col, row)).to be true
             end
           end
 
@@ -186,7 +186,7 @@ describe Game do
 
             it do
               color, col, row = board.drop_disc(not_winning_red_pick, red)
-              expect(game.win?(color, col, row)).to be false
+              expect(game.win?(board, color, col, row)).to be false
             end
           end
 
@@ -196,7 +196,7 @@ describe Game do
 
             it do
               color, col, row = board.drop_disc(not_winning_red_pick, red)
-              expect(game.win?(color, col, row)).to be false
+              expect(game.win?(board, color, col, row)).to be false
             end
           end
 
@@ -206,7 +206,7 @@ describe Game do
 
             it do
               color, col, row = board.drop_disc(not_winning_red_pick, red)
-              expect(game.win?(color, col, row)).to be false
+              expect(game.win?(board, color, col, row)).to be false
             end
           end
         end
@@ -220,10 +220,10 @@ describe Game do
           context 'when 4 red discs are connected' do
             let(:red_picks) { [1, 2, 4] }
             let(:winning_pick) { 3 }
-    
+
             it do
               color, col, row = board.drop_disc(winning_pick, red)
-              expect(game.win?(color, col, row)).to be true
+              expect(game.win?(board, color, col, row)).to be true
             end
           end
 
@@ -233,7 +233,7 @@ describe Game do
 
             it do
               color, col, row = board.drop_disc(not_winning_red_pick, red)
-              expect(game.win?(color, col, row)).to be false
+              expect(game.win?(board, color, col, row)).to be false
             end
           end
 
@@ -243,7 +243,7 @@ describe Game do
 
             it do
               color, col, row = board.drop_disc(not_winning_red_pick, red)
-              expect(game.win?(color, col, row)).to be false
+              expect(game.win?(board, color, col, row)).to be false
             end
           end
 
@@ -253,7 +253,7 @@ describe Game do
 
             it do
               color, col, row = board.drop_disc(not_winning_red_pick, red)
-              expect(game.win?(color, col, row)).to be false
+              expect(game.win?(board, color, col, row)).to be false
             end
           end
         end
@@ -270,7 +270,7 @@ describe Game do
 
       it 'does not go around the board' do
         color, col, row = board.drop_disc(not_winning_red_pick, red)
-        expect(game.win?(color, col, row)).to be false
+        expect(game.win?(board, color, col, row)).to be false
       end
     end
   end
