@@ -8,7 +8,7 @@ require_relative 'board/board'
 board = ConnectFour::Board.new
 
 human_player = ConnectFour::HumanPlayer.new
-computer_player = ConnectFour::ComputerPlayer.new(board, difficulty: 6)
+computer_player = ConnectFour::ComputerPlayer.new(board, difficulty: 4)
 
 game = ConnectFour::Game.new(board, human_player, computer_player)
 
