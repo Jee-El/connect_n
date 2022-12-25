@@ -8,17 +8,19 @@ module ConnectFour
     include Winnable
   
     attr_reader :opponent_color
-    attr_accessor :difficulty
+    attr_accessor :difficulty, :delay
   
-    def initialize(board, name: 'Computer', color: :yellow, opponent_color: :red, difficulty: 0)
+    def initialize(board, name: 'Computer', color: :yellow, opponent_color: :red, difficulty: 0, delay: 1)
       super(name: name, color: color)
       @board = board
       @opponent_color = opponent_color
       @difficulty = difficulty
+      @delay = delay
       @scores = { color => Float::INFINITY, opponent_color => -Float::INFINITY }
     end
   
     def pick
+      sleep delay
       best_score = -Float::INFINITY
       alpha = best_score
       beta = -best_score
