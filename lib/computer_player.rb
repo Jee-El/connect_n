@@ -1,3 +1,0 @@
-class ComputerPlayer
-
-end
