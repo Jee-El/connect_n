@@ -2,7 +2,7 @@
 
 require_relative '../lib/player/human_player/human_player'
 
-describe HumanPlayer do
+describe ConnectFour::HumanPlayer do
   subject(:human_player) { described_class.new }
 
   describe '#pick' do

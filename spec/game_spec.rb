@@ -3,10 +3,10 @@
 require_relative '../lib/game/game'
 require_relative '../lib/board/board'
 
-describe Game do
+describe ConnectFour::Game do
   subject(:game) { described_class.new(board, human_player, computer_player) }
 
-  let(:board) { Board.new }
+  let(:board) { ConnectFour::Board.new }
   let(:human_player) { double('human_player') }
   let(:computer_player) { double('computer_player') }
 
