@@ -10,17 +10,17 @@ describe Board do
     let(:pick) { 4 }
     let(:row) { 0 }
 
-    context 'when the pick is not filled' do
+    context 'when the col is not filled' do
       it 'drops a disc' do
         expect { board.drop_disc(pick, color) }.to change { board.cols[pick].count(nil) }.by(-1)
       end
 
-      it 'returns an array of color & coordinates of the pick' do
+      it 'returns an array containing color, col, and row' do
         expect(board.drop_disc(pick, color)).to contain_exactly(color, pick, row)
       end
     end
 
-    context 'when the pick is filled' do
+    context 'when the col is filled' do
       before do
         6.times { board.drop_disc(pick, color) }
       end

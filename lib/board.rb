@@ -1,17 +1,19 @@
+# frozen_string_literal: true
+
 class Board
   attr_reader :cols
 
   def initialize
     @cols = Array.new(7) { Array.new(6) }
-    @color_to_emoji = {red: '🔴', yellow: '🟡', nil => '⚪'}
+    @color_to_emoji = { red: '🔴', yellow: '🟡', nil => '⚪' }
   end
 
   def drop_disc(pick, color)
     row = cols[pick].index(nil)
-    if row
-      @cols[pick][row] = color 
-      [color, pick, row]
-    end
+    return unless row
+
+    @cols[pick][row] = color
+    [color, pick, row]
   end
 
   def valid_pick?(pick)
