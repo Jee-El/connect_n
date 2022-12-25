@@ -2,8 +2,10 @@
 
 require_relative '../player'
 
-class HumanPlayer < Player
-  def initialize(name: 'Human', color: :red) = super
-
-  def pick = gets.to_i - 1
+module ConnectFour
+  class HumanPlayer < Player
+    def initialize(name: 'Human', color: :red) = super
+  
+    def pick = gets.to_i - 1
+  end
 end

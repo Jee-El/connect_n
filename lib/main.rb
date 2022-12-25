@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
-%w[human_player computer_player game board].each { require_relative _1 }
+require_relative 'player/human_player/human_player'
+require_relative 'player/computer_player/computer_player'
+require_relative 'game/game'
+require_relative 'board/board'
 
-board = Board.new
+board = ConnectFour::Board.new
 
-human_player = HumanPlayer.new
-computer_player = ComputerPlayer.new(board, difficulty: 6)
+human_player = ConnectFour::HumanPlayer.new
+computer_player = ConnectFour::ComputerPlayer.new(board, difficulty: 6)
 
-game = Game.new(board, human_player, computer_player)
+game = ConnectFour::Game.new(board, human_player, computer_player)
 
 game.play
