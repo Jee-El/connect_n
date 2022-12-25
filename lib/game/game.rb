@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'winnable'
+require_relative '../winnable/winnable'
 
 class Game
   include Winnable
@@ -19,7 +19,7 @@ class Game
 
       pick = current_player.pick
 
-      next puts 'Invalid pick' unless board.valid_pick?(pick)
+      next puts 'Invalid Pick' unless board.valid_pick?(pick)
 
       color, col, row = board.drop_disc(pick, current_player.color)
 

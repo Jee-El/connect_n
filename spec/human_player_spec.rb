@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../lib/human_player'
+require_relative '../lib/player/human_player/human_player'
 
 describe HumanPlayer do
   subject(:human_player) { described_class.new }

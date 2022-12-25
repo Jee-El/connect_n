@@ -8,6 +8,12 @@ class Board
     @color_to_emoji = { red: '🔴', yellow: '🟡', nil => '⚪' }
   end
 
+  def initialize_copy(original_board)
+    super
+    @cols = @cols.dup.map &:dup
+    @color_to_emoji = @color_to_emoji.dup
+  end
+
   def drop_disc(pick, color)
     row = cols[pick].index(nil)
     return unless row
