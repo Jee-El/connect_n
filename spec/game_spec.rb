@@ -18,7 +18,7 @@ describe ConnectFour::Game do
       before { allow(game).to receive(:win?).and_return(true) }
 
       it do
-        expect(game).to receive(:win?)
+        expect(game).to receive(:win?).once
         game.over?(board)
       end
 
@@ -37,12 +37,12 @@ describe ConnectFour::Game do
         before { allow(board).to receive(:filled?).and_return(true) }
 
         it do
-          expect(game).to receive(:win?)
+          expect(game).to receive(:win?).once
           game.over?(board)
         end
 
         it do
-          expect(board).to receive(:filled?)
+          expect(board).to receive(:filled?).once
           game.over?(board)
         end
 
@@ -53,12 +53,12 @@ describe ConnectFour::Game do
         before { allow(board).to receive(:filled?).and_return(false) }
 
         it do
-          expect(game).to receive(:win?)
+          expect(game).to receive(:win?).once
           game.over?(board)
         end
 
         it do
-          expect(board).to receive(:filled?)
+          expect(board).to receive(:filled?).once
           game.over?(board)
         end
 
@@ -271,6 +271,45 @@ describe ConnectFour::Game do
       it 'does not go around the board' do
         color, col, row = board.drop_disc(not_winning_red_pick, fire)
         expect(game.win?(board, color, col, row)).to be false
+      end
+    end
+  end
+
+  describe '#play_again?' do
+    context 'when the user wants to play again' do
+      before do
+        allow(game).to receive(:gets).and_return('1')
+      end
+
+      it do
+        expect(game).to receive(:gets).once
+        game.play_again?
+      end
+
+      it { expect(game.play_again?).to be true }
+    end
+
+    context 'when the user does not want to play again' do
+      before do
+        allow(game).to receive(:gets).and_return('0')
+      end
+
+      it do
+        expect(game).to receive(:gets).once
+        game.play_again?
+      end
+
+      it { expect(game.play_again?).to be false }
+    end
+
+    context 'when the user enters invalid input' do
+      before do
+        allow(game).to receive(:gets).and_return('4', '1')
+      end
+
+      it 'asks for input again' do
+        expect(game).to receive(:gets).twice
+        game.play_again?
       end
     end
   end
