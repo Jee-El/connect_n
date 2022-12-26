@@ -31,8 +31,7 @@ module ConnectFour
     end
   
     def display
-      cols.transpose.reverse.each { |row| puts row.join }
-      puts [' ', ' ₀ ', ' ₁ ', ' ₂ ', ' ₃ ', ' ₄ ', ' ₅ ', ' ₆ ', ' ₇ '].join
+      cols.transpose.reverse_each { |row| puts row.join }
     end
   
     def at(col, row)
