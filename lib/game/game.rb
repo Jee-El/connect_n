@@ -38,6 +38,11 @@ module ConnectFour
     end
   
     def over(winner) = puts "#{winner.name} has won!"
+
+    def play_again?
+      until [0, 1].include?(input = gets.to_i); end
+      input == 1
+    end
   
     private
   
