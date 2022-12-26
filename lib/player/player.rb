@@ -2,11 +2,11 @@
 
 module ConnectFour
   class Player
-    attr_reader :name, :color
+    attr_reader :name, :disc
   
-    def initialize(name:, color:)
+    def initialize(name:, disc:)
       @name = name
-      @color = color
+      @disc = disc
     end
   end
 end

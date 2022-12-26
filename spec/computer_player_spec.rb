@@ -6,16 +6,16 @@ require_relative '../lib/board/board'
 describe ConnectFour::ComputerPlayer do
   subject(:computer_player) { described_class.new(board) }
   let(:board) { ConnectFour::Board.new }
-  let(:yellow) { computer_player.color }
-  let(:red) { computer_player.opponent_color }
+  let(:snowflake) { computer_player.disc }
+  let(:fire) { computer_player.opponent_disc }
 
   describe '#pick' do
     context "when it is the computer's turn and it can win in one move" do
-      let(:yellow_picks) { [1, 2, 3] }
+      let(:snowflake_picks) { [1, 2, 3] }
       let(:best_picks) { [0, 4] }
 
       before do
-        yellow_picks.each { |yellow_pick| board.drop_disc(yellow_pick, yellow) }
+        snowflake_picks.each { |snowflake_pick| board.drop_disc(snowflake_pick, snowflake) }
       end
 
       it 'plays that move' do
@@ -25,11 +25,11 @@ describe ConnectFour::ComputerPlayer do
     end
 
     context "when it is the computer's turn and the other player can win in one move" do
-      let(:red_picks) { [0, 1, 2] }
+      let(:fire_picks) { [0, 1, 2] }
       let(:best_pick) { 3 }
 
       before do
-        red_picks.each { |red_pick| board.drop_disc(red_pick, red) }
+        fire_picks.each { |fire_pick| board.drop_disc(fire_pick, fire) }
       end
 
       it 'stops them from winning' do

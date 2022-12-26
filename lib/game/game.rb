@@ -22,19 +22,19 @@ module ConnectFour
   
         next puts 'Invalid Pick' unless board.valid_pick?(pick)
   
-        color, col, row = board.drop_disc(pick, current_player.color)
+        disc, col, row = board.drop_disc(pick, current_player.disc)
   
         clear_screen
         board.display
   
-        break over(current_player) if over?(board, color, col, row)
+        break over(current_player) if over?(board, disc, col, row)
   
         players.rotate!
       end
     end
   
-    def over?(board, color = :nil, col = -Float::INFINITY, row = -Float::INFINITY)
-      win?(board, color, col, row) || board.filled?
+    def over?(board, disc = :nil, col = -Float::INFINITY, row = -Float::INFINITY)
+      win?(board, disc, col, row) || board.filled?
     end
   
     def over(winner) = puts "#{winner.name} has won!"
