@@ -2,39 +2,37 @@
 
 module ConnectFour
   class Board
-    attr_reader :cols
-  
-    def initialize
-      @cols = Array.new(7) { Array.new(6) }
-      @color_to_emoji = { red: '🔴', yellow: '🟡', nil => '⚪' }
+    attr_reader :cols, :empty_disc
+
+    def initialize(empty_disc: '⚪')
+      @cols = Array.new(7) { Array.new(6) { empty_disc } }
+      @empty_disc = empty_disc
     end
   
     def initialize_copy(original_board)
       super
       @cols = @cols.dup.map &:dup
-      @color_to_emoji = @color_to_emoji.dup
     end
   
-    def drop_disc(pick, color)
-      row = cols[pick].index(nil)
+    def drop_disc(pick, disc)
+      row = cols[pick].index(empty_disc)
       return unless row
   
-      @cols[pick][row] = color
-      [color, pick, row]
+      cols[pick][row] = disc
+      [disc, pick, row]
     end
   
     def valid_pick?(pick)
-      !!cols[pick]&.include?(nil)
+      pick.between?(0, 6) && cols[pick].include?(empty_disc)
     end
   
     def filled?
-      !cols.flatten.index(nil)
+      !cols.flatten.index(empty_disc)
     end
   
     def display
-      (cols.first.length - 1).downto(0) do |i|
-        cols.each { |col| print @color_to_emoji[col[i]] } and puts
-      end
+      cols.transpose.each { |row| puts row.join }
+      puts [' ', ' ₀ ', ' ₁ ', ' ₂ ', ' ₃ ', ' ₄ ', ' ₅ ', ' ₆ ', ' ₇ '].join
     end
   
     def at(col, row)

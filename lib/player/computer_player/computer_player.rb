@@ -7,16 +7,16 @@ module ConnectFour
   class ComputerPlayer < Player
     include Winnable
   
-    attr_reader :opponent_color
+    attr_reader :opponent_disc
     attr_accessor :difficulty, :delay
-  
-    def initialize(board, name: 'Computer', color: :yellow, opponent_color: :red, difficulty: 0, delay: 1)
-      super(name: name, color: color)
+
+    def initialize(board, name: 'Computer', disc: '❄️', opponent_disc: '🔥', difficulty: 0, delay: 0)
+      super(name: name, disc: disc)
       @board = board
-      @opponent_color = opponent_color
+      @opponent_disc = opponent_disc
       @difficulty = difficulty
       @delay = delay
-      @scores = { color => Float::INFINITY, opponent_color => -Float::INFINITY }
+      @scores = { disc => Float::INFINITY, opponent_disc => -Float::INFINITY }
     end
   
     def pick
@@ -29,8 +29,8 @@ module ConnectFour
         next unless @board.valid_pick?(pick)
   
         board_copy = @board.dup
-        _, col, row = board_copy.drop_disc(pick, color)
-        score = minimax(board_copy, color, col, row, alpha, beta)
+        _, col, row = board_copy.drop_disc(pick, disc)
+        score = minimax(board_copy, disc, col, row, alpha, beta)
         if score > best_score
           best_score = score
           best_pick = pick
@@ -45,8 +45,8 @@ module ConnectFour
   
     attr_reader :scores
   
-    def minimax(current_board, current_color, col, row, alpha, beta, depth = difficulty, maximizing: false)
-      return scores[current_color] if win?(current_board, current_color, col, row)
+    def minimax(current_board, current_disc, col, row, alpha, beta, depth = difficulty, maximizing: false)
+      return scores[current_disc] if win?(current_board, current_disc, col, row)
   
       return 0 if current_board.filled?
   
@@ -58,10 +58,10 @@ module ConnectFour
           next unless current_board.valid_pick?(pick)
   
           board_copy = current_board.dup
-          _, col, row = board_copy.drop_disc(pick, color)
+          _, col, row = board_copy.drop_disc(pick, disc)
           score = [
             score,
-            minimax(board_copy, color, col, row, alpha, beta, depth - 1, maximizing: false)
+            minimax(board_copy, disc, col, row, alpha, beta, depth - 1, maximizing: false)
           ].max
           break if score >= beta
           alpha = [alpha, score].max
@@ -72,10 +72,10 @@ module ConnectFour
           next unless current_board.valid_pick?(pick)
   
           board_copy = current_board.dup
-          _, col, row = board_copy.drop_disc(pick, opponent_color)
+          _, col, row = board_copy.drop_disc(pick, opponent_disc)
           score = [
             score,
-            minimax(board_copy, opponent_color, col, row, alpha, beta, depth - 1, maximizing: true)
+            minimax(board_copy, opponent_disc, col, row, alpha, beta, depth - 1, maximizing: true)
           ].min
           break if score <= alpha
           beta = [beta, score].min
@@ -90,12 +90,12 @@ module ConnectFour
       opponent_value = 0
       rows.each do |row|
         row.each_cons(4).each do |set_of_four|
-          color_count = set_of_four.count color
-          opponent_color_count = set_of_four.count opponent_color
-          next if [color_count, opponent_color_count].none?(&:zero?)
+          disc_count = set_of_four.count disc
+          opponent_disc_count = set_of_four.count opponent_disc
+          next if [disc_count, opponent_disc_count].none?(&:zero?)
   
-          value += color_count
-          opponent_value += opponent_color_count
+          value += disc_count
+          opponent_value += opponent_disc_count
         end
       end
       value - opponent_value
