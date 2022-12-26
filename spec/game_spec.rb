@@ -8,7 +8,7 @@ describe ConnectFour::Game do
 
   let(:board) { ConnectFour::Board.new }
   let(:human_player) { instance_double(ConnectFour::HumanPlayer, disc: '🔥') }
-  let(:computer_player) { instance_double(ConnectFour::ComputerPlayer, disc: '❄️') }
+  let(:computer_player) { instance_double(ConnectFour::ComputerPlayer, disc: '🎁') }
 
   let(:fire) { human_player.disc }
   let(:snowflake) { computer_player.disc }

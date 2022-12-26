@@ -10,7 +10,7 @@ module ConnectFour
     attr_reader :opponent_disc
     attr_accessor :difficulty, :delay
 
-    def initialize(board, name: 'Computer', disc: '❄️', opponent_disc: '🔥', difficulty: 0, delay: 0)
+    def initialize(board, name: 'Computer', disc: '🎁', opponent_disc: '🔥', difficulty: 0, delay: 0)
       super(name: name, disc: disc)
       @board = board
       @opponent_disc = opponent_disc
@@ -25,7 +25,7 @@ module ConnectFour
       alpha = best_score
       beta = -best_score
       best_pick = nil
-      7.times do |pick|
+      @board.cols.length.times do |pick|
         next unless @board.valid_pick?(pick)
   
         board_copy = @board.dup
@@ -54,7 +54,7 @@ module ConnectFour
   
       if maximizing
         score = -Float::INFINITY
-        7.times do |pick|
+        @board.cols.length.times do |pick|
           next unless current_board.valid_pick?(pick)
   
           board_copy = current_board.dup
@@ -68,7 +68,7 @@ module ConnectFour
         end
       else
         score = Float::INFINITY
-        7.times do |pick|
+        @board.cols.length.times do |pick|
           next unless current_board.valid_pick?(pick)
   
           board_copy = current_board.dup
