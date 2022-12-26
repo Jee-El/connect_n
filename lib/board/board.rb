@@ -4,8 +4,8 @@ module ConnectFour
   class Board
     attr_reader :cols, :empty_disc
 
-    def initialize(empty_disc: '⚪')
-      @cols = Array.new(7) { Array.new(6) { empty_disc } }
+    def initialize(cols_amount: 7, rows_amount: 6, empty_disc: '⚪')
+      @cols = Array.new(cols_amount) { Array.new(rows_amount) { empty_disc } }
       @empty_disc = empty_disc
     end
   
@@ -23,7 +23,7 @@ module ConnectFour
     end
   
     def valid_pick?(pick)
-      pick.between?(0, 6) && cols[pick].include?(empty_disc)
+      pick.between?(0, @cols.length - 1) && cols[pick].include?(empty_disc)
     end
   
     def filled?
@@ -31,7 +31,7 @@ module ConnectFour
     end
   
     def display
-      cols.transpose.each { |row| puts row.join }
+      cols.transpose.reverse.each { |row| puts row.join }
       puts [' ', ' ₀ ', ' ₁ ', ' ₂ ', ' ₃ ', ' ₄ ', ' ₅ ', ' ₆ ', ' ₇ '].join
     end
   
