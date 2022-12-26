@@ -4,29 +4,30 @@ require_relative '../lib/board/board'
 
 describe ConnectFour::Board do
   subject(:board) { described_class.new }
-  let(:color) { :red }
-
+  let(:disc) { '🔥' }
+  let(:empty_disc) { board.empty_disc }
+ 
   describe '#drop_disc' do
     let(:pick) { 4 }
     let(:row) { 0 }
 
     context 'when the col is not filled' do
       it 'drops a disc' do
-        expect { board.drop_disc(pick, color) }.to change { board.cols[pick].count(nil) }.by(-1)
+        expect { board.drop_disc(pick, disc) }.to change { board.cols[pick].count(empty_disc) }.by(-1)
       end
 
-      it 'returns an array containing color, col, and row' do
-        expect(board.drop_disc(pick, color)).to contain_exactly(color, pick, row)
+      it 'returns an array containing disc, col, and row' do
+        expect(board.drop_disc(pick, disc)).to contain_exactly(disc, pick, row)
       end
     end
 
     context 'when the col is filled' do
       before do
-        6.times { board.drop_disc(pick, color) }
+        6.times { board.drop_disc(pick, disc) }
       end
 
       it 'does not drop a disc' do
-        expect { board.drop_disc(pick, color) }.not_to change { board.cols[pick].count(nil) }
+        expect { board.drop_disc(pick, disc) }.not_to change { board.cols[pick].count(empty_disc) }
       end
     end
   end
@@ -42,16 +43,24 @@ describe ConnectFour::Board do
 
     context 'when the pick is not valid' do
       context 'when it is not in the range 0..6' do
-        let(:pick) { 8 }
+        context 'when it is positive' do
+          let(:pick) { 8 }
 
-        it { expect(board.valid_pick?(pick)).to be false }
+          it { expect(board.valid_pick?(pick)).to be false }
+        end
+        
+        context 'when it is negative' do
+          let(:pick) { -2 }
+
+          it { expect(board.valid_pick?(pick)).to be false }
+        end
       end
 
       context 'when it is in the range 0..6 and it is filled' do
         let(:pick) { 5 }
 
         before do
-          6.times { board.drop_disc(pick, color) }
+          6.times { board.drop_disc(pick, disc) }
         end
 
         it { expect(board.valid_pick?(pick)).to be false }
@@ -62,7 +71,7 @@ describe ConnectFour::Board do
   describe '#filled?' do
     context 'when the board is filled' do
       before do
-        7.times { |pick| 6.times { board.drop_disc(pick, color) } }
+        7.times { |pick| 6.times { board.drop_disc(pick, disc) } }
       end
 
       it { expect(board.filled?).to be true }
