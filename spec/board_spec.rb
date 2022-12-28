@@ -6,28 +6,28 @@ describe ConnectFour::Board do
   subject(:board) { described_class.new }
   let(:disc) { '🔥' }
   let(:empty_disc) { board.empty_disc }
- 
+
   describe '#drop_disc' do
     let(:pick) { 4 }
     let(:row) { 0 }
 
     context 'when the col is not filled' do
       it 'drops a disc' do
-        expect { board.drop_disc(pick, disc) }.to change { board.cols[pick].count(empty_disc) }.by(-1)
+        expect { board.drop_disc(disc, at_col: pick) }.to change { board.table.column(pick).count(empty_disc) }.by(-1)
       end
 
       it 'returns an array containing disc, col, and row' do
-        expect(board.drop_disc(pick, disc)).to contain_exactly(disc, pick, row)
+        expect(board.drop_disc(disc, at_col: pick)).to contain_exactly(row, pick, disc)
       end
     end
 
     context 'when the col is filled' do
       before do
-        6.times { board.drop_disc(pick, disc) }
+        6.times { board.drop_disc(disc, at_col: pick) }
       end
 
       it 'does not drop a disc' do
-        expect { board.drop_disc(pick, disc) }.not_to change { board.cols[pick].count(empty_disc) }
+        expect { board.drop_disc(disc, at_col: pick) }.not_to change { board.table.column(pick).count(empty_disc) }
       end
     end
   end
@@ -48,7 +48,7 @@ describe ConnectFour::Board do
 
           it { expect(board.valid_pick?(pick)).to be false }
         end
-        
+
         context 'when it is negative' do
           let(:pick) { -2 }
 
@@ -60,7 +60,7 @@ describe ConnectFour::Board do
         let(:pick) { 5 }
 
         before do
-          6.times { board.drop_disc(pick, disc) }
+          6.times { board.drop_disc(disc, at_col: pick) }
         end
 
         it { expect(board.valid_pick?(pick)).to be false }
@@ -71,7 +71,7 @@ describe ConnectFour::Board do
   describe '#filled?' do
     context 'when the board is filled' do
       before do
-        7.times { |pick| 6.times { board.drop_disc(pick, disc) } }
+        7.times { |pick| 6.times { board.drop_disc(disc, at_col: pick) } }
       end
 
       it { expect(board.filled?).to be true }
@@ -120,7 +120,7 @@ describe ConnectFour::Board do
 
         it do
           cell = board.at(in_range_positive_col, in_range_positive_row)
-          expected_cell = board.cols.dig(in_range_positive_col, in_range_positive_row)
+          expected_cell = board.table.rows.transpose.dig(in_range_positive_col, in_range_positive_row)
           expect(cell).to eq(expected_cell)
         end
       end
