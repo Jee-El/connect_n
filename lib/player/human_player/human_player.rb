@@ -9,7 +9,8 @@ module ConnectFour
     def initialize(name: 'Human', disc: '🔥') = super
 
     def pick
-      PROMPT.ask('Please enter a column number : ', convert: :int) - 1
+      input = PROMPT.ask('Please enter a column number : ').downcase
+      input == ':w' ? input : input.to_i - 1
     end
   end
 end

@@ -7,7 +7,7 @@ require_relative '../board/board'
 
 module ConnectFour
   class GameSetup
-    attr_accessor :parameters
+    attr_reader :parameters, :game
 
     def initialize
       @parameters = { human_players: [] }
@@ -27,11 +27,13 @@ module ConnectFour
     end
 
     def launch_game
-      game = if parameters[:mode] == 'multiplayer'
-               multiplayer_game
-             else
-               single_player_game
-             end
+      return Game.resume if Game.resume?
+
+      @game = if parameters[:mode] == 'multiplayer'
+                multiplayer_game
+              else
+                single_player_game
+              end
       game.play
     end
 
