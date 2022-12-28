@@ -2,6 +2,8 @@
 
 require_relative '../lib/game/game'
 require_relative '../lib/board/board'
+require_relative '../lib/player/human_player/human_player'
+require_relative '../lib/player/computer_player/computer_player'
 
 describe ConnectFour::Game do
   subject(:game) { described_class.new(board, human_player, computer_player) }
@@ -11,23 +13,27 @@ describe ConnectFour::Game do
   let(:computer_player) { instance_double(ConnectFour::ComputerPlayer, disc: '🎁') }
 
   let(:fire) { human_player.disc }
-  let(:snowflake) { computer_player.disc }
+  let(:gift) { computer_player.disc }
 
   describe '#over?' do
+    let(:row) { -Float::INFINITY }
+    let(:col) { -Float::INFINITY }
+    let(:no_disc) { :no_disc }
+
     context 'when a player has won' do
       before { allow(game).to receive(:win?).and_return(true) }
 
       it do
         expect(game).to receive(:win?).once
-        game.over?(board)
+        game.over?(board, -Float::INFINITY, -Float::INFINITY, :no_disc)
       end
 
       it do
         expect(board).not_to receive(:filled?)
-        game.over?(board)
+        game.over?(board, row, col, no_disc)
       end
 
-      it { expect(game.over?(board)).to be true }
+      it { expect(game.over?(board, row, col, no_disc)).to be true }
     end
 
     context 'when a player has not won' do
@@ -38,15 +44,15 @@ describe ConnectFour::Game do
 
         it do
           expect(game).to receive(:win?).once
-          game.over?(board)
+          game.over?(board, row, col, no_disc)
         end
 
         it do
           expect(board).to receive(:filled?).once
-          game.over?(board)
+          game.over?(board, row, col, no_disc)
         end
 
-        it { expect(game.over?(board)).to be true }
+        it { expect(game.over?(board, row, col, no_disc)).to be true }
       end
 
       context 'when the board is not filled' do
@@ -54,111 +60,111 @@ describe ConnectFour::Game do
 
         it do
           expect(game).to receive(:win?).once
-          game.over?(board)
+          game.over?(board, row, col, no_disc)
         end
 
         it do
           expect(board).to receive(:filled?).once
-          game.over?(board)
+          game.over?(board, row, col, no_disc)
         end
 
-        it { expect(game.over?(board)).to be false }
+        it { expect(game.over?(board, row, col, no_disc)).to be false }
       end
     end
   end
 
   describe '#win?' do
     context 'when no fire disc is on the first or last col of the board' do
-      let(:yellow_picks) { [*0..6, 0, 6] }
+      let(:gift_picks) { [*0..6, 0, 6] }
 
       before do
-        yellow_picks.each { |yellow_pick| board.drop_disc(yellow_pick, snowflake) }
+        gift_picks.each { |gift_pick| board.drop_disc(gift, at_col: gift_pick) }
       end
 
       context 'for horizonal' do
-        before { red_picks.each { |red_pick| board.drop_disc(red_pick, fire) } }
+        before { fire_picks.each { |fire_pick| board.drop_disc(fire, at_col: fire_pick) } }
 
         context 'when 4 fire discs are connected' do
-          let(:red_picks) { [1, 2, 4] }
+          let(:fire_picks) { [1, 2, 4] }
           let(:winning_pick) { 3 }
 
           it 'returns true' do
-            color, col, row = board.drop_disc(winning_pick, fire)
-            expect(game.win?(board, color, col, row)).to be true
+            row, col = board.drop_disc(fire, at_col: winning_pick)
+            expect(game.win?(board, row, col, fire)).to be true
           end
         end
 
         context 'when only 3 fire discs are connected' do
-          let(:red_picks) { [1, 2] }
-          let(:not_winning_red_pick) { 3 }
+          let(:fire_picks) { [1, 2] }
+          let(:not_winning_fire_pick) { 3 }
 
           it do
-            color, col, row = board.drop_disc(not_winning_red_pick, fire)
-            expect(game.win?(board, color, col, row)).to be false
+            row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
+            expect(game.win?(board, row, col, fire)).to be false
           end
         end
 
         context 'when only 2 fire discs are connected' do
-          let(:red_picks) { [1] }
-          let(:not_winning_red_pick) { 2 }
+          let(:fire_picks) { [1] }
+          let(:not_winning_fire_pick) { 2 }
 
           it do
-            color, col, row = board.drop_disc(not_winning_red_pick, fire)
-            expect(game.win?(board, color, col, row)).to be false
+            row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
+            expect(game.win?(board, row, col, fire)).to be false
           end
         end
 
         context 'when there is only 1 fire disc' do
-          let(:red_picks) { [] }
-          let(:not_winning_red_pick) { 1 }
+          let(:fire_picks) { [] }
+          let(:not_winning_fire_pick) { 1 }
 
           it do
-            color, col, row = board.drop_disc(not_winning_red_pick, fire)
-            expect(game.win?(board, color, col, row)).to be false
+            row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
+            expect(game.win?(board, row, col, fire)).to be false
           end
         end
       end
 
       context 'for vertical' do
-        before { red_picks.each { |red_pick| board.drop_disc(red_pick, fire) } }
+        before { fire_picks.each { |fire_pick| board.drop_disc(fire, at_col: fire_pick) } }
 
         context 'when 4 fire discs are connected' do
-          let(:red_picks) { [5] * 3 }
+          let(:fire_picks) { [5] * 3 }
           let(:winning_pick) { 5 }
 
           it do
-            color, col, row = board.drop_disc(winning_pick, fire)
-            expect(game.win?(board, color, col, row)).to be true
+            row, col = board.drop_disc(fire, at_col: winning_pick)
+            expect(game.win?(board, row, col, fire)).to be true
           end
         end
 
         context 'when only 3 fire discs are connected' do
-          let(:red_picks) { [5] * 2 }
-          let(:not_winning_red_pick) { 5 }
+          let(:fire_picks) { [5] * 2 }
+          let(:not_winning_fire_pick) { 5 }
 
           it do
-            color, col, row = board.drop_disc(not_winning_red_pick, fire)
-            expect(game.win?(board, color, col, row)).to be false
+            row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
+            expect(game.win?(board, row, col, fire)).to be false
           end
         end
 
         context 'when only 2 fire discs are connected' do
-          let(:red_picks) { [5] }
-          let(:not_winning_red_pick) { 5 }
+          let(:fire_picks) { [5] }
+          let(:not_winning_fire_pick) { 5 }
 
           it do
-            color, col, row = board.drop_disc(not_winning_red_pick, fire)
-            expect(game.win?(board, color, col, row)).to be false
+            row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
+            expect(game.win?(board, row, col, fire)).to be false
           end
         end
 
         context 'when there is only 1 fire disc' do
-          let(:red_picks) { [] }
-          let(:not_winning_red_pick) { 5 }
+          let(:fire_picks) { [] }
+          let(:not_winning_fire_pick) { 5 }
 
           it do
-            color, col, row = board.drop_disc(not_winning_red_pick, fire)
-            expect(game.win?(board, color, col, row)).to be false
+            row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
+            expect(game.win?(board, row, col, fire)).to be false
           end
         end
       end
@@ -166,94 +172,94 @@ describe ConnectFour::Game do
       context 'for diagonal' do
         context 'for forward-diagonal' do
           before do
-            (1..3).each { |i| i.times { board.drop_disc(i + 1, snowflake) } }
-            red_picks.each { |red_pick| board.drop_disc(red_pick, fire) }
+            (1..3).each { |i| i.times { board.drop_disc(gift, at_col: i + 1) } }
+            fire_picks.each { |fire_pick| board.drop_disc(fire, at_col: fire_pick) }
           end
 
           context 'when 4 fire discs are connected' do
-            let(:red_picks) { [1, 2, 4] }
+            let(:fire_picks) { [1, 2, 4] }
             let(:winning_pick) { 3 }
 
             it do
-              color, col, row = board.drop_disc(winning_pick, fire)
-              expect(game.win?(board, color, col, row)).to be true
+              row, col = board.drop_disc(fire, at_col: winning_pick)
+              expect(game.win?(board, row, col, fire)).to be true
             end
           end
 
           context 'when only 3 fire discs are connected' do
-            let(:red_picks) { [1, 2] }
-            let(:not_winning_red_pick) { 3 }
+            let(:fire_picks) { [1, 2] }
+            let(:not_winning_fire_pick) { 3 }
 
             it do
-              color, col, row = board.drop_disc(not_winning_red_pick, fire)
-              expect(game.win?(board, color, col, row)).to be false
+              row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
+              expect(game.win?(board, row, col, fire)).to be false
             end
           end
 
           context 'when only 2 fire discs are connected' do
-            let(:red_picks) { [1] }
-            let(:not_winning_red_pick) { 2 }
+            let(:fire_picks) { [1] }
+            let(:not_winning_fire_pick) { 2 }
 
             it do
-              color, col, row = board.drop_disc(not_winning_red_pick, fire)
-              expect(game.win?(board, color, col, row)).to be false
+              row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
+              expect(game.win?(board, row, col, fire)).to be false
             end
           end
 
           context 'when there is only 1 fire disc' do
-            let(:red_picks) { [] }
-            let(:not_winning_red_pick) { 1 }
+            let(:fire_picks) { [] }
+            let(:not_winning_fire_pick) { 1 }
 
             it do
-              color, col, row = board.drop_disc(not_winning_red_pick, fire)
-              expect(game.win?(board, color, col, row)).to be false
+              row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
+              expect(game.win?(board, row, col, fire)).to be false
             end
           end
         end
 
         context 'for backward-diagonal' do
           before do
-            (1..3).each { |i| (4 - i).times { board.drop_disc(i, snowflake) } }
-            red_picks.each { |red_pick| board.drop_disc(red_pick, fire) }
+            (1..3).each { |i| (4 - i).times { board.drop_disc(gift, at_col: i) } }
+            fire_picks.each { |fire_pick| board.drop_disc(fire, at_col: fire_pick) }
           end
 
           context 'when 4 fire discs are connected' do
-            let(:red_picks) { [1, 2, 4] }
+            let(:fire_picks) { [1, 2, 4] }
             let(:winning_pick) { 3 }
 
             it do
-              color, col, row = board.drop_disc(winning_pick, fire)
-              expect(game.win?(board, color, col, row)).to be true
+              row, col = board.drop_disc(fire, at_col: winning_pick)
+              expect(game.win?(board, row, col, fire)).to be true
             end
           end
 
           context 'when only 3 fire discs are connected' do
-            let(:red_picks) { [1, 2] }
-            let(:not_winning_red_pick) { 3 }
+            let(:fire_picks) { [1, 2] }
+            let(:not_winning_fire_pick) { 3 }
 
             it do
-              color, col, row = board.drop_disc(not_winning_red_pick, fire)
-              expect(game.win?(board, color, col, row)).to be false
+              row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
+              expect(game.win?(board, row, col, fire)).to be false
             end
           end
 
           context 'when only 2 fire discs are connected' do
-            let(:red_picks) { [1] }
-            let(:not_winning_red_pick) { 2 }
+            let(:fire_picks) { [1] }
+            let(:not_winning_fire_pick) { 2 }
 
             it do
-              color, col, row = board.drop_disc(not_winning_red_pick, fire)
-              expect(game.win?(board, color, col, row)).to be false
+              row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
+              expect(game.win?(board, row, col, fire)).to be false
             end
           end
 
           context 'when there is only 1 fire disc' do
-            let(:red_picks) { [] }
-            let(:not_winning_red_pick) { 1 }
+            let(:fire_picks) { [] }
+            let(:not_winning_fire_pick) { 1 }
 
             it do
-              color, col, row = board.drop_disc(not_winning_red_pick, fire)
-              expect(game.win?(board, color, col, row)).to be false
+              row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
+              expect(game.win?(board, row, col, fire)).to be false
             end
           end
         end
@@ -261,55 +267,16 @@ describe ConnectFour::Game do
     end
 
     context 'when there are fire discs on the first and last cols of the board' do
-      let(:red_picks) { [0, 5, 6] }
-      let(:not_winning_red_pick) { 1 }
+      let(:fire_picks) { [0, 5, 6] }
+      let(:not_winning_fire_pick) { 1 }
 
       before do
-        red_picks.each { |red_pick| board.drop_disc(red_pick, fire) }
+        fire_picks.each { |fire_pick| board.drop_disc(fire, at_col: fire_pick) }
       end
 
       it 'does not go around the board' do
-        color, col, row = board.drop_disc(not_winning_red_pick, fire)
-        expect(game.win?(board, color, col, row)).to be false
-      end
-    end
-  end
-
-  describe '#play_again?' do
-    context 'when the user wants to play again' do
-      before do
-        allow(game).to receive(:gets).and_return('1')
-      end
-
-      it do
-        expect(game).to receive(:gets).once
-        game.play_again?
-      end
-
-      it { expect(game.play_again?).to be true }
-    end
-
-    context 'when the user does not want to play again' do
-      before do
-        allow(game).to receive(:gets).and_return('0')
-      end
-
-      it do
-        expect(game).to receive(:gets).once
-        game.play_again?
-      end
-
-      it { expect(game.play_again?).to be false }
-    end
-
-    context 'when the user enters invalid input' do
-      before do
-        allow(game).to receive(:gets).and_return('4', '1')
-      end
-
-      it 'asks for input again' do
-        expect(game).to receive(:gets).twice
-        game.play_again?
+        row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
+        expect(game.win?(board, row, col, fire)).to be false
       end
     end
   end
