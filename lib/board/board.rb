@@ -1,44 +1,68 @@
 # frozen_string_literal: true
 
+require 'tty-table'
+
 module ConnectFour
   class Board
-    attr_reader :cols, :empty_disc
+    attr_reader :table, :empty_disc
 
     def initialize(cols_amount: 7, rows_amount: 6, empty_disc: '⚪')
-      @cols = Array.new(cols_amount) { Array.new(rows_amount) { empty_disc } }
       @empty_disc = empty_disc
+
+      @headers = TTY::Table.new rows: [[*'1 '.."#{cols_amount} "]]
+
+      @rows = Array.new(rows_amount) { Array.new(cols_amount) { empty_disc } }
+
+      @table = TTY::Table.new rows: @rows
     end
-  
+
     def initialize_copy(original_board)
       super
-      @cols = @cols.dup.map &:dup
+      @empty_disc = @empty_disc.clone
+      @rows = @rows.clone.map(&:clone)
+
+      @headers = Marshal.load Marshal.dump @headers
+      @table = Marshal.load Marshal.dump @table
     end
-  
-    def drop_disc(pick, disc)
-      row = cols[pick].index(empty_disc)
+
+    def drop_disc(disc, at_col:)
+      row = table.column(at_col).index(empty_disc)
       return unless row
-  
-      cols[pick][row] = disc
-      [disc, pick, row]
+
+      update(row, at_col, disc)
     end
-  
+
     def valid_pick?(pick)
-      pick.between?(0, @cols.length - 1) && cols[pick].include?(empty_disc)
+      !!table.column(pick)&.include?(empty_disc)
     end
-  
+
     def filled?
-      !cols.flatten.index(empty_disc)
+      !table.flatten.index(empty_disc)
     end
-  
+
     def display
-      cols.transpose.reverse_each { |row| puts row.join }
+      # The table starts counting rows from top to bottom
+      # And since all the other methods rely on rows starting
+      # from bottom to top, it's easier to reverse the table rows
+      # when displaying it than doing rows.length - index everywhere
+      table.rows.reverse!
+      puts table.render :ascii
+      table.rows.reverse!
+      puts @headers.render :ascii
     end
-  
-    def at(col, row)
-      return if [col, row].any?(&:negative?)
-  
-      cols.dig(col, row)
+
+    def at(row, col)
+      return if [row, col].any?(&:negative?) || !valid_pick?(col)
+
+      table[row, col]
+    end
+
+    private
+
+    def update(row, col, disc)
+      @rows[row][col] = disc
+      @table = TTY::Table.new rows: @rows
+      [row, col, disc]
     end
   end
 end
-
