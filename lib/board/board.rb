@@ -44,7 +44,7 @@ module ConnectFour
       # The table starts counting rows from top to bottom
       # And since all the other methods rely on rows starting
       # from bottom to top, it's easier to reverse the table rows
-      # when displaying it than doing rows.length - index everywhere
+      # when displaying it than doing rows.length - index everywhere.
       table.rows.reverse!
       puts table.render :ascii
       table.rows.reverse!
@@ -52,6 +52,12 @@ module ConnectFour
     end
 
     def at(row, col)
+      # table[i, j] fails if :
+      # either argument is negative, or
+      # i is positive and a valid index while j is not valid
+      # table[i, j] returns nil if :
+      # both args are positive but both out of index bounds, or
+      # the first arg is out of index bounds
       return if [row, col].any?(&:negative?) || !valid_pick?(col)
 
       table[row, col]
@@ -60,6 +66,10 @@ module ConnectFour
     private
 
     def update(row, col, disc)
+      # tty-table seems to have an issue that makes it render
+      # the initialized table only, which means any changes
+      # made to it after initialization don't get rendered,
+      # so I have to create a new table with the new changes.
       @rows[row][col] = disc
       @table = TTY::Table.new rows: @rows
       [row, col, disc]

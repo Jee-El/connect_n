@@ -2,10 +2,10 @@
 
 require 'yaml'
 
-require_relative '../lib/game/game'
-require_relative '../lib/board/board'
-require_relative '../lib/player/human_player/human_player'
-require_relative '../lib/player/computer_player/computer_player'
+require_relative '../../lib/game/game'
+require_relative '../../lib/board/board'
+require_relative '../../lib/player/human_player/human_player'
+require_relative '../../lib/player/computer_player/computer_player'
 
 describe ConnectFour::Game do
   subject(:game) { described_class.new(board, human_player, computer_player) }

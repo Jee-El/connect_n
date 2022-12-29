@@ -1,5 +1,5 @@
-require_relative '../lib/connect_four/connect_four'
-require_relative '../lib/player/human_player/human_player'
+require_relative '../../../lib/connect_four/connect_four'
+require_relative '../../../lib/player/human_player/human_player'
 
 describe ConnectFour::HumanPlayer do
   subject(:human_player) { described_class.new }

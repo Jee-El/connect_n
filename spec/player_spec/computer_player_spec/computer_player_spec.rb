@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../lib/player/computer_player/computer_player'
-require_relative '../lib/board/board'
+require_relative '../../../lib/player/computer_player/computer_player'
+require_relative '../../../lib/board/board'
 
 describe ConnectFour::ComputerPlayer do
   subject(:computer_player) { described_class.new(board) }
