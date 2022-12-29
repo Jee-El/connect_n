@@ -17,6 +17,10 @@ describe ConnectFour::Game do
   let(:fire) { human_player.disc }
   let(:gift) { computer_player.disc }
 
+  before do
+    allow(YAML).to receive(:safe_load_file)
+  end
+
   describe '#over?' do
     let(:row) { -Float::INFINITY }
     let(:col) { -Float::INFINITY }
@@ -284,7 +288,7 @@ describe ConnectFour::Game do
   end
 
   describe '.save' do
-    let(:saved_game_name) { 'uwu' }
+    let(:saved_game_name) { 'game_1' }
 
     before do
       allow(described_class).to receive(:gets).and_return(saved_game_name)
@@ -292,20 +296,64 @@ describe ConnectFour::Game do
       allow(YAML).to receive(:dump)
     end
 
-    it 'pushs a game to @saved_games' do
+    it 'adds a key-value pair of name-game to @saved_games' do
       expect { described_class.save(game) }
-      .to change { described_class.saved_games.length }.by(1)
-    end
-
-    it 'dumps the game object' do
-      expect(YAML).to receive(:dump).with(described_class.saved_games)
-      described_class.save(game)
+      .to change { described_class.saved_games.keys.length }.by(1)
     end
 
     it 'serializes the game object to saved_games.yaml' do
       dumped_saved_games = YAML.dump(described_class.saved_games)
-      expect(File).to receive(:write).with(described_class::FILE_NAME, dumped_saved_games)
+      expect(File)
+        .to receive(:write)
+        .with(described_class::FILE_NAME, dumped_saved_games)
+        .once
       described_class.save(game)
+    end
+  end
+
+  describe '.load' do
+    let(:saved_game_name) { 'game_1' }
+
+    it 'returns a Game instance"' do
+      deserialized_game = described_class.load(saved_game_name)
+      expect(deserialized_game).to be_an(described_class)
+    end
+  end
+
+  describe '.reload_saved_games' do
+    it 'updates the contents of @saved_games' do
+      expect(YAML)
+        .to receive(:safe_load_file)
+        .with(
+          described_class::FILE_NAME,
+          { permitted_classes: described_class::PERMITTED_CLASSES }
+        )
+      described_class.reload_saved_games
+    end
+  end
+
+  describe '.resume' do
+    before do
+      allow(game).to receive(:play)
+    end
+
+    it 'calls Game#play on the passed-in game instance' do
+      expect(game).to receive(:play)
+      described_class.resume game
+    end
+  end
+
+  describe '#save?' do
+    context 'when the user wants to save' do
+      let(:user_input) { ':w' }
+
+      it { expect(game.save?(user_input)).to be true }
+    end
+
+    context 'when the user does not want to save' do
+      let(:user_input) { '5' }
+
+      it { expect(game.save?(user_input)).to be false }
     end
   end
 end
