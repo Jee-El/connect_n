@@ -19,7 +19,9 @@ module ConnectFour
 
     PERMITTED_CLASSES = [Symbol, Game, Board, HumanPlayer, ComputerPlayer]
 
-    @saved_games = YAML.safe_load_file(FILE_NAME, permitted_classes: PERMITTED_CLASSES)
+    @saved_games = YAML.safe_load_file(
+      FILE_NAME, permitted_classes: PERMITTED_CLASSES
+      ) || {}
 
     def initialize(board, current_player, other_player)
       @board = board
@@ -52,40 +54,33 @@ module ConnectFour
       win?(board, row, col, disc) || board.filled?
     end
 
-    def play_again?
-      PROMPT.yes? 'Would you like to play again?'
-    end
+    def play_again? = PROMPT.yes? 'Would you like to play again?'
 
     def save?(input) = input == ':w'
 
-    def self.resume?
-      PROMPT.yes? 'Do you want to resume a game?'
-    end
+    def self.resume? = PROMPT.yes? 'Do you want to resume a game?'
 
-    def self.resume
-      load(saved_game).play
-    end
+    def self.resume(game) = game.play
 
-    def self.saved_games(should_update: false)
-      return @saved_games unless should_update
+    def self.saved_games = @saved_games
 
-      @saved_games = YAML.safe_load_file(File.read(FILE_NAME), permitted_classes: PERMITTED_CLASSES)
+    def self.load(name) = saved_games[name.to_sym]
+
+    def self.reload_saved_games
+      @saved_games = YAML.safe_load_file(
+        FILE_NAME, permitted_classes: PERMITTED_CLASSES
+      )
     end
 
     def self.save(game, name = gets.chomp)
-      new_game = { name.to_sym => game }
-      saved_games.push new_game
+      saved_games[name.to_sym] = game
       dumped = YAML.dump(saved_games)
       File.write(FILE_NAME, dumped)
     end
 
-    def self.load(name)
-      saved_games.find { |k, v| k == name }
-    end
-
-    def self.saved_game
-      saved_games = saved_games.lazy.map(&:keys).with_index { "#{_2} -> #{_1}" }
-      PROMPT.select 'Choose a saved game : ', saved_games
+    def self.saved_game_name
+      saved_games = saved_games.keys.with_index(1) { "#{_2} -> #{_1}" }
+      PROMPT.select 'Choose a saved game : ', saved_games, convert: :sym
     end
   end
 end

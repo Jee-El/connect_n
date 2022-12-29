@@ -27,7 +27,11 @@ module ConnectFour
     end
 
     def launch_game
-      return Game.resume if Game.resume?
+      if Game.resume?
+        game_name = Game.saved_game_name
+        game = Game.load game_name
+        return Game.resume(game)
+      end
 
       @game = if parameters[:mode] == 'multiplayer'
                 multiplayer_game
