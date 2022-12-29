@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'yaml'
+
 require_relative '../lib/game/game'
 require_relative '../lib/board/board'
 require_relative '../lib/player/human_player/human_player'
@@ -278,6 +280,32 @@ describe ConnectFour::Game do
         row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
         expect(game.win?(board, row, col, fire)).to be false
       end
+    end
+  end
+
+  describe '.save' do
+    let(:saved_game_name) { 'uwu' }
+
+    before do
+      allow(described_class).to receive(:gets).and_return(saved_game_name)
+      allow(File).to receive(:write)
+      allow(YAML).to receive(:dump)
+    end
+
+    it 'pushs a game to @saved_games' do
+      expect { described_class.save(game) }
+      .to change { described_class.saved_games.length }.by(1)
+    end
+
+    it 'dumps the game object' do
+      expect(YAML).to receive(:dump).with(described_class.saved_games)
+      described_class.save(game)
+    end
+
+    it 'serializes the game object to saved_games.yaml' do
+      dumped_saved_games = YAML.dump(described_class.saved_games)
+      expect(File).to receive(:write).with(described_class::FILE_NAME, dumped_saved_games)
+      described_class.save(game)
     end
   end
 end
