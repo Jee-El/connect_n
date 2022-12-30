@@ -81,12 +81,6 @@ describe ConnectFour::Game do
 
   describe '#win?' do
     context 'when no fire disc is on the first or last col of the board' do
-      let(:gift_picks) { [*0..6, 0, 6] }
-
-      before do
-        gift_picks.each { |gift_pick| board.drop_disc(gift, at_col: gift_pick) }
-      end
-
       context 'for horizonal' do
         before { fire_picks.each { |fire_pick| board.drop_disc(fire, at_col: fire_pick) } }
 
