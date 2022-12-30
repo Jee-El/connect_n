@@ -13,7 +13,7 @@ describe ConnectFour::Board do
 
     context 'when the col is not filled' do
       it 'drops a disc' do
-        expect { board.drop_disc(disc, at_col: pick) }.to change { board.table.column(pick).count(empty_disc) }.by(-1)
+        expect { board.drop_disc(disc, at_col: pick) }.to change { board.col(pick).count(empty_disc) }.by(-1)
       end
 
       it 'returns an array containing disc, col, and row' do
@@ -23,11 +23,11 @@ describe ConnectFour::Board do
 
     context 'when the col is filled' do
       before do
-        6.times { board.drop_disc(disc, at_col: pick) }
+        board.rows_amount.times { board.drop_disc(disc, at_col: pick) }
       end
 
       it 'does not drop a disc' do
-        expect { board.drop_disc(disc, at_col: pick) }.not_to change { board.table.column(pick).count(empty_disc) }
+        expect { board.drop_disc(disc, at_col: pick) }.to raise_exception(NoMethodError)
       end
     end
   end
@@ -60,7 +60,7 @@ describe ConnectFour::Board do
         let(:pick) { 5 }
 
         before do
-          6.times { board.drop_disc(disc, at_col: pick) }
+          board.rows_amount.times { board.drop_disc(disc, at_col: pick) }
         end
 
         it { expect(board.valid_pick?(pick)).to be false }
@@ -71,7 +71,7 @@ describe ConnectFour::Board do
   describe '#filled?' do
     context 'when the board is filled' do
       before do
-        7.times { |pick| 6.times { board.drop_disc(disc, at_col: pick) } }
+        board.cols_amount.times { |pick| board.rows_amount.times { board.drop_disc(disc, at_col: pick) } }
       end
 
       it { expect(board.filled?).to be true }
@@ -88,7 +88,7 @@ describe ConnectFour::Board do
       let(:positive_row) { 4 }
 
       it do
-        cell = board.at(negative_col, positive_row)
+        cell = board.cell(negative_col, positive_row)
         expect(cell).to be_nil
       end
     end
@@ -98,7 +98,7 @@ describe ConnectFour::Board do
       let(:negative_row) { -74 }
 
       it do
-        cell = board.at(positive_col, negative_row)
+        cell = board.cell(positive_col, negative_row)
         expect(cell).to be_nil
       end
     end
@@ -108,7 +108,7 @@ describe ConnectFour::Board do
       let(:negative_row) { -2 }
 
       it do
-        cell = board.at(negative_col, negative_row)
+        cell = board.cell(negative_col, negative_row)
         expect(cell).to be_nil
       end
     end
@@ -119,9 +119,8 @@ describe ConnectFour::Board do
         let(:in_range_positive_row) { 2 }
 
         it do
-          cell = board.at(in_range_positive_col, in_range_positive_row)
-          expected_cell = board.table.rows.transpose.dig(in_range_positive_col, in_range_positive_row)
-          expect(cell).to eq(expected_cell)
+          cell = board.cell(in_range_positive_row, in_range_positive_col)
+          expect(cell).not_to be_nil
         end
       end
 
@@ -130,7 +129,7 @@ describe ConnectFour::Board do
         let(:out_of_range_positive_row) { 30 }
 
         it do
-          cell = board.at(out_of_range_positive_col, out_of_range_positive_row)
+          cell = board.cell(out_of_range_positive_row, out_of_range_positive_col)
           expect(cell).to be_nil
         end
       end
@@ -140,7 +139,7 @@ describe ConnectFour::Board do
         let(:positive_row) { 4 }
 
         it do
-          cell = board.at(out_of_range_positive_col, positive_row)
+          cell = board.cell(positive_row, out_of_range_positive_col)
           expect(cell).to be_nil
         end
       end
@@ -150,7 +149,7 @@ describe ConnectFour::Board do
         let(:out_of_range_positive_row) { 7 }
 
         it do
-          cell = board.at(positive_col, out_of_range_positive_row)
+          cell = board.cell(out_of_range_positive_row, positive_col)
           expect(cell).to be_nil
         end
       end

@@ -42,7 +42,7 @@ module ConnectFour
         row, col, disc = board.drop_disc(current_player.disc, at_col: pick)
 
         clear_display
-        board.display
+        board.draw
 
         break over(current_player) if over?(board, row, col, disc)
 
