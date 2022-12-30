@@ -34,6 +34,8 @@ module ConnectN
     def setup_parameters
       parameters[:human_players].push [human_name, disc]
 
+      parameters[:min_to_win] = min_to_win
+
       parameters[:mode] = mode
 
       if parameters[:mode] == 'multiplayer'
@@ -42,6 +44,10 @@ module ConnectN
         parameters[:difficulty] = difficulty
         parameters[:human_starts?] = human_starts?
       end
+    end
+
+    def min_to_win
+      PROMPT.ask 'Minimum number of aligned similar discs necessary to win : ', convert: :int
     end
 
     def difficulty
