@@ -10,14 +10,14 @@ module ConnectFour
         Welcome to Connect Four
         #{'    '}
         To play, Enter a number from 1
-        to #{board.table.columns_count}
+        to #{board.cols_amount}
         The number corresponds to the
         column order starting from the
         left.
         Enter anything to proceed.
       TEXT
       puts TTY::Box.frame text, padding: 2, align: :center
-      board.display
+      board.draw
     end
 
     def invalid_pick
@@ -25,7 +25,7 @@ module ConnectFour
     end
 
     def over(winner)
-      TTY::Box.success  "#{winner.name} has won!"
+      puts TTY::Box.success  "#{winner.name} has won!"
     end
 
     def clear_display
