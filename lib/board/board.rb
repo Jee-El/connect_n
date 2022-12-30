@@ -78,7 +78,7 @@ module ConnectFour
       (1..cols_amount).each do |num|
         num.even? ? print(' ') : print('  ')
         print num
-        num.odd? ? print(' ') : print('  |')
+        num.odd? ? print(' |') : print('  |')
       end
       puts
     end
