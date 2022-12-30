@@ -13,6 +13,24 @@ module ConnectFour
       @parameters = { human_players: [] }
     end
 
+    def launch_game
+      if !Game.saved_games.empty? && Game.resume?
+        game_name = Game.saved_game_name
+        @game = Game.load game_name
+        return Game.resume game
+      end
+
+      setup_parameters
+      @game = if parameters[:mode] == 'multiplayer'
+                multiplayer_game
+              else
+                single_player_game
+              end
+      game.play
+    end
+
+    private
+
     def setup_parameters
       parameters[:human_players].push [human_name, disc]
 
@@ -25,23 +43,6 @@ module ConnectFour
         parameters[:human_starts?] = human_starts?
       end
     end
-
-    def launch_game
-      if Game.resume?
-        game_name = Game.saved_game_name
-        game = Game.load game_name
-        return Game.resume game
-      end
-
-      @game = if parameters[:mode] == 'multiplayer'
-                multiplayer_game
-              else
-                single_player_game
-              end
-      game.play
-    end
-
-    private
 
     def difficulty
       PROMPT.slider 'Difficulty : ', [*0..10], default: 0
