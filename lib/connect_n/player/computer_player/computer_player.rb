@@ -3,19 +3,27 @@
 require_relative '../player'
 require_relative '../../winnable/winnable'
 
-module ConnectFour
+module ConnectN
   class ComputerPlayer < Player
     include Winnable
 
-    attr_reader :opponent_disc
-    attr_accessor :difficulty, :delay
+    attr_accessor :opponent_disc, :difficulty, :delay, :min_to_win
 
-    def initialize(board, name: 'Computer', disc: '🎁', opponent_disc: '🔥', difficulty: 0, delay: 0)
+    def initialize(
+      name: 'Computer',
+      disc: '🧊',
+      min_to_win: 4,
+      difficulty: 0,
+      delay: 0,
+      board:,
+      opponent_disc:
+    )
       super(name: name, disc: disc)
-      @board = board
-      @opponent_disc = opponent_disc
+      @min_to_win = min_to_win
       @difficulty = difficulty
       @delay = delay
+      @board = board
+      @opponent_disc = opponent_disc
       @scores = { disc => Float::INFINITY, opponent_disc => -Float::INFINITY }
     end
 
@@ -91,9 +99,9 @@ module ConnectFour
       value = 0
       opponent_value = 0
       current_board.table.each do |row|
-        row.each_cons(4).each do |set_of_four|
-          disc_count = set_of_four.count disc
-          opponent_disc_count = set_of_four.count opponent_disc
+        row.each_cons(min_to_win).each do |set_of_n|
+          disc_count = set_of_n.count disc
+          opponent_disc_count = set_of_n.count opponent_disc
           next if [disc_count, opponent_disc_count].none?(&:zero?)
 
           value += disc_count

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative '../../lib/board/board'
+require_relative '../../lib/connect_n/board/board'
 
-describe ConnectFour::Board do
+describe ConnectN::Board do
   subject(:board) { described_class.new }
   let(:disc) { '🔥' }
   let(:empty_disc) { board.empty_disc }

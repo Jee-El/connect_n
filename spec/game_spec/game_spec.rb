@@ -2,20 +2,20 @@
 
 require 'yaml'
 
-require_relative '../../lib/game/game'
-require_relative '../../lib/board/board'
-require_relative '../../lib/player/human_player/human_player'
-require_relative '../../lib/player/computer_player/computer_player'
+require_relative '../../lib/connect_n/game/game'
+require_relative '../../lib/connect_n/board/board'
+require_relative '../../lib/connect_n/player/human_player/human_player'
+require_relative '../../lib/connect_n/player/computer_player/computer_player'
 
-describe ConnectFour::Game do
+describe ConnectN::Game do
   subject(:game) { described_class.new(board, human_player, computer_player) }
 
-  let(:board) { ConnectFour::Board.new }
-  let(:human_player) { instance_double(ConnectFour::HumanPlayer, disc: '🔥') }
-  let(:computer_player) { instance_double(ConnectFour::ComputerPlayer, disc: '🎁') }
+  let(:board) { ConnectN::Board.new }
+  let(:human_player) { instance_double(ConnectN::HumanPlayer, disc: '🔥') }
+  let(:computer_player) { instance_double(ConnectN::ComputerPlayer, disc: '🧊') }
 
   let(:fire) { human_player.disc }
-  let(:gift) { computer_player.disc }
+  let(:ice) { computer_player.disc }
 
   before do
     allow(YAML).to receive(:safe_load_file)
@@ -172,7 +172,7 @@ describe ConnectFour::Game do
       context 'for diagonal' do
         context 'for forward-diagonal' do
           before do
-            (1..3).each { |i| i.times { board.drop_disc(gift, at_col: i + 1) } }
+            (1..3).each { |i| i.times { board.drop_disc(ice, at_col: i + 1) } }
             fire_picks.each { |fire_pick| board.drop_disc(fire, at_col: fire_pick) }
           end
 
@@ -219,7 +219,7 @@ describe ConnectFour::Game do
 
         context 'for backward-diagonal' do
           before do
-            (1..3).each { |i| (4 - i).times { board.drop_disc(gift, at_col: i) } }
+            (1..3).each { |i| (4 - i).times { board.drop_disc(ice, at_col: i) } }
             fire_picks.each { |fire_pick| board.drop_disc(fire, at_col: fire_pick) }
           end
 
@@ -292,7 +292,7 @@ describe ConnectFour::Game do
 
     it 'adds a key-value pair of name-game to @saved_games' do
       expect { described_class.save(game) }
-      .to change { described_class.saved_games.keys.length }.by(1)
+        .to change { described_class.saved_games.keys.length }.by(1)
     end
 
     it 'serializes the game object to saved_games.yaml' do

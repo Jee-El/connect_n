@@ -3,7 +3,7 @@
 require 'tty-prompt'
 require 'tty-box'
 
-module ConnectFour
+module ConnectN
   module Displayable
     def welcome(board)
       text = <<~TEXT
@@ -25,7 +25,7 @@ module ConnectFour
     end
 
     def over(winner)
-      puts TTY::Box.success  "#{winner.name} has won!"
+      puts TTY::Box.success "#{winner.name} has won!"
     end
 
     def clear_display

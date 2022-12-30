@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ConnectFour
+module ConnectN
   class Board
     attr_reader :table, :empty_disc, :cols_amount, :rows_amount
 

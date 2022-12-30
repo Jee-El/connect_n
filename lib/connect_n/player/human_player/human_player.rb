@@ -4,7 +4,7 @@ require 'tty-prompt'
 
 require_relative '../player'
 
-module ConnectFour
+module ConnectN
   class HumanPlayer < Player
     def initialize(name: 'Human', disc: '🔥') = super
 

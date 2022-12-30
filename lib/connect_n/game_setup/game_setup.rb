@@ -5,7 +5,7 @@ require_relative '../player/computer_player/computer_player'
 require_relative '../game/game'
 require_relative '../board/board'
 
-module ConnectFour
+module ConnectN
   class GameSetup
     attr_reader :parameters, :game
 

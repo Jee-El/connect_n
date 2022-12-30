@@ -8,12 +8,12 @@ require_relative '../board/board'
 require_relative '../winnable/winnable'
 require_relative '../displayable/displayable'
 
-module ConnectFour
+module ConnectN
   class Game
     include Displayable
     include Winnable
 
-    attr_reader :board, :players
+    attr_reader :board, :players, :min_to_win
 
     FILE_NAME = 'saved_games.yaml'
 
@@ -23,9 +23,10 @@ module ConnectFour
       FILE_NAME, permitted_classes: PERMITTED_CLASSES
       ) || {}
 
-    def initialize(board, current_player, other_player)
+    def initialize(board, current_player, other_player, min_to_win: 4)
       @board = board
       @players = [current_player, other_player]
+      @min_to_win = min_to_win
     end
 
     def play

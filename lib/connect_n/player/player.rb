@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-module ConnectFour
+module ConnectN
   class Player
-    attr_reader :name, :disc
+    attr_accessor :name, :disc
 
     def initialize(name:, disc:)
       @name = name

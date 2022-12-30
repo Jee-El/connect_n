@@ -2,6 +2,6 @@
 
 require 'tty-prompt'
 
-module ConnectFour
+module ConnectN
   PROMPT = TTY::Prompt.new
 end
