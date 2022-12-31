@@ -6,7 +6,7 @@ require_relative '../game/game'
 require_relative '../board/board'
 
 module ConnectN
-  class GameSetup
+  class Demo
     attr_reader :parameters, :game
 
     def initialize
