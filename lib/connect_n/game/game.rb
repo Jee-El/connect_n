@@ -66,16 +66,12 @@ module ConnectN
 
     def self.file_name = @file_name
 
-    def self.saved_games(file_name = nil)
-      return @saved_games if @saved_games
+    def self.file_name=(name)
+      @file_name = name
+    end
 
-      @file_name = file_name + '.yaml'
-
-      @saved_games = YAML.safe_load_file(
-        @file_name,
-        permitted_classes: PERMITTED_CLASSES,
-        aliases: true
-      ) || {}
+    def self.saved_games
+      @saved_games || reload_saved_games
     end
 
     def self.reload_saved_games
@@ -83,7 +79,7 @@ module ConnectN
         @file_name,
         permitted_classes: PERMITTED_CLASSES,
         aliases: true
-      )
+      ) || {}
     end
 
     def self.save(game, name = new_saved_game_name)
