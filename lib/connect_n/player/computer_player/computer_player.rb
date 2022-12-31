@@ -25,28 +25,23 @@ module ConnectN
       @delay = delay
       @board = board
       @opponent_disc = opponent_disc
-      @scores = { disc => Float::INFINITY, opponent_disc => -Float::INFINITY }
+      @scores = { disc => 10000, opponent_disc => -10000 }
     end
 
     def pick
       sleep delay
       best_score = -Float::INFINITY
-      alpha = best_score
-      beta = -best_score
       best_pick = nil
       @board.cols_amount.times do |pick|
         next unless @board.valid_pick?(pick)
 
         board_copy = @board.clone
-        i, j = board_copy.drop_disc(disc, at_col: pick)
-        score = minimax(board_copy, disc, i, j, alpha, beta)
-        if score > best_score
+        row_num, col_num = board_copy.drop_disc(disc, at_col: pick)
+        score = minimax(board_copy, disc, row_num, col_num)
+        if score >= best_score
           best_score = score
           best_pick = pick
         end
-        break if best_score >= beta
-
-        alpha = [alpha, best_score].max
       end
       best_pick
     end
@@ -55,12 +50,22 @@ module ConnectN
 
     attr_reader :scores
 
-    def minimax(current_board, current_disc, i, j, alpha, beta, depth = difficulty, maximizing: false)
-      return scores[current_disc] if win?(current_board, i, j, current_disc)
+    def minimax(
+      current_board,
+      current_disc,
+      row_num,
+      col_num,
+      moves_counter = 0,
+      alpha = -Float::INFINITY,
+      beta = Float::INFINITY,
+      depth = difficulty,
+      maximizing: false
+    )
+      return calculate_win_score(current_disc, moves_counter) if win?(current_board, row_num, col_num, current_disc)
 
       return 0 if current_board.filled?
 
-      return heuristic(current_board) if depth <= 0
+      return heuristic(current_board, current_disc) if depth <= 0
 
       if maximizing
         score = -Float::INFINITY
@@ -68,10 +73,10 @@ module ConnectN
           next unless current_board.valid_pick?(pick)
 
           board_copy = current_board.clone
-          i, j = board_copy.drop_disc(disc, at_col: pick)
+          row_num, col_num = board_copy.drop_disc(disc, at_col: pick)
           score = [
             score,
-            minimax(board_copy, disc, i, j, alpha, beta, depth - 1, maximizing: false)
+            minimax(board_copy, disc, row_num, col_num, moves_counter + 1, alpha, beta, depth - 1, maximizing: false)
           ].max
           break if score >= beta
 
@@ -83,10 +88,10 @@ module ConnectN
           next unless current_board.valid_pick?(pick)
 
           board_copy = current_board.clone
-          i, j = board_copy.drop_disc(opponent_disc, at_col: pick)
+          row_num, col_num = board_copy.drop_disc(opponent_disc, at_col: pick)
           score = [
             score,
-            minimax(board_copy, opponent_disc, i, j, alpha, beta, depth - 1, maximizing: true)
+            minimax(board_copy, opponent_disc, row_num, col_num, moves_counter + 1, alpha, beta, depth - 1, maximizing: true)
           ].min
           break if score <= alpha
 
@@ -96,20 +101,24 @@ module ConnectN
       score
     end
 
-    def heuristic(current_board)
+    def calculate_win_score(disc, moves_counter)
+      score = scores[disc] * @board.cols_amount * @board.rows_amount
+      score / moves_counter.to_f
+    end
+
+    def heuristic(board, disc)
       value = 0
-      opponent_value = 0
-      current_board.rows.each do |row|
+      board.rows.each do |row|
         row.each_cons(min_to_win).each do |set_of_n|
           disc_count = set_of_n.count disc
           opponent_disc_count = set_of_n.count opponent_disc
           next if [disc_count, opponent_disc_count].none?(&:zero?)
 
           value += disc_count
-          opponent_value += opponent_disc_count
+          value -= opponent_disc_count
         end
       end
-      value - opponent_value
+      value
     end
   end
 end
