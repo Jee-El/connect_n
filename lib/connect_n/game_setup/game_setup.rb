@@ -36,6 +36,8 @@ module ConnectN
     def setup_parameters
       parameters[:human_players].push [human_name, disc]
 
+      parameters[:cols_amount] = cols_amount
+      parameters[:rows_amount] = rows_amount
       parameters[:min_to_win] = min_to_win
 
       parameters[:mode] = mode
@@ -46,6 +48,14 @@ module ConnectN
         parameters[:difficulty] = difficulty
         parameters[:human_starts?] = human_starts?
       end
+    end
+
+    def cols_amount
+      PROMPT.ask 'How many columns do you want in the board?', convert: :int, default: 7
+    end
+
+    def rows_amount
+      PROMPT.ask 'How many rows do you want in the board?', convert: :int, default: 6
     end
 
     def min_to_win
@@ -69,7 +79,7 @@ module ConnectN
     end
 
     def disc
-      PROMPT.ask 'Enter a character that will represent your disc (optional) : ' do |q|
+      PROMPT.ask 'Enter a character that will represent your disc : ', default: '🔥' do |q|
         q.validate(/^.?$/)
         q.messages[:valid?] = 'Please enter a single character.'
       end
@@ -81,39 +91,42 @@ module ConnectN
 
     def multiplayer_game
       human_players = multiplayer_players
+      board = Board.new(
+        cols_amount: parameters[:cols_amount],
+        rows_amount: parameters[:rows_amount]
+      )
       Game.new(
-        Board.new,
-        *players,
+        board: board,
+        first_player: players.first,
+        second_player: players.last,
         min_to_win: parameters[:min_to_win]
       )
     end
 
     def single_player_game
-      board = Board.new
+      board = Board.new(
+        cols_amount: parameters[:cols_amount],
+        rows_amount: parameters[:rows_amount]
+      )
       players = single_player_players(board)
       Game.new(
-        board,
-        *players,
+        board: board,
+        first_player: players.first,
+        second_player: players.last,
         min_to_win: parameters[:min_to_win]
       )
     end
 
     def multiplayer_players
       parameters[:human_players].map do |name, disc|
-        next HumanPlayer.new(name: name, disc: disc) if disc
-
-        HumanPlayer.new(name: name)
+        HumanPlayer.new(name: name, disc: disc)
       end
     end
 
     def single_player_players(board)
       name, disc = parameters[:human_players].first
       players = [
-        if disc
-          HumanPlayer.new name: name, disc: disc
-        else
-          HumanPlayer.new name: name
-        end,
+        HumanPlayer.new(name: name, disc: disc),
         ComputerPlayer.new(
           board: board,
           opponent_disc: disc,
