@@ -14,12 +14,10 @@ module ConnectN
     end
 
     def launch
-      unless File.exist?('saved_games.yaml')
-        if !Game.saved_games('saved_games').empty? && Game.resume?
-          game_name = Game.saved_game_name
-          @game = Game.load game_name
-          return Game.resume game
-        end
+      if !Game.saved_games('connect_n_saved_games').empty? && Game.resume?
+        game_name = Game.saved_game_name
+        @game = Game.load game_name
+        return Game.resume game
       end
 
       setup_parameters
@@ -86,7 +84,7 @@ module ConnectN
     end
 
     def human_name
-      PROMPT.ask 'Enter your name (optional) : ', default: ENV['USER']
+      PROMPT.ask 'Enter your name : ', default: ENV['USER']
     end
 
     def multiplayer_game
