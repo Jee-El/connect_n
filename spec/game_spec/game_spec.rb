@@ -8,7 +8,7 @@ require_relative '../../lib/connect_n/player/human_player/human_player'
 require_relative '../../lib/connect_n/player/computer_player/computer_player'
 
 describe ConnectN::Game do
-  subject(:game) { described_class.new(board, human_player, computer_player) }
+  subject(:game) { described_class.new(board: board, first_player: human_player, second_player: computer_player) }
 
   let(:board) { ConnectN::Board.new }
   let(:human_player) { instance_double(ConnectN::HumanPlayer, disc: '🔥') }
@@ -17,13 +17,9 @@ describe ConnectN::Game do
   let(:fire) { human_player.disc }
   let(:ice) { computer_player.disc }
 
-  before do
-    allow(YAML).to receive(:safe_load_file)
-  end
-
   describe '#over?' do
-    let(:row) { -Float::INFINITY }
-    let(:col) { -Float::INFINITY }
+    let(:row_num) { -Float::INFINITY }
+    let(:col_num) { -Float::INFINITY }
     let(:no_disc) { :no_disc }
 
     context 'when a player has won' do
@@ -282,9 +278,11 @@ describe ConnectN::Game do
   end
 
   describe '.save' do
+    let(:file_name) { 'saved_games' }
     let(:saved_game_name) { 'game_1' }
 
     before do
+      described_class.saved_games file_name
       allow(described_class).to receive(:gets).and_return(saved_game_name)
       allow(File).to receive(:write)
       allow(YAML).to receive(:dump)
@@ -299,7 +297,7 @@ describe ConnectN::Game do
       dumped_saved_games = YAML.dump(described_class.saved_games)
       expect(File)
         .to receive(:write)
-        .with(described_class::FILE_NAME, dumped_saved_games)
+        .with(described_class.file_name, dumped_saved_games)
         .once
       described_class.save(game)
     end
@@ -315,13 +313,20 @@ describe ConnectN::Game do
   end
 
   describe '.reload_saved_games' do
+    let(:file_name) { 'saved_games' }
+
+    before do
+      allow(YAML).to receive(:safe_load_file)
+      described_class.saved_games file_name
+    end
+
     it 'updates the contents of @saved_games' do
       expect(YAML)
         .to receive(:safe_load_file)
         .with(
-          described_class::FILE_NAME,
+          described_class.file_name,
           { permitted_classes: described_class::PERMITTED_CLASSES }
-        )
+        ).once
       described_class.reload_saved_games
     end
   end
@@ -332,7 +337,7 @@ describe ConnectN::Game do
     end
 
     it 'calls Game#play on the passed-in game instance' do
-      expect(game).to receive(:play)
+      expect(game).to receive(:play).once
       described_class.resume game
     end
   end
