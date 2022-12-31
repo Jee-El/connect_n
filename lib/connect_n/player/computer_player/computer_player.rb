@@ -7,7 +7,8 @@ module ConnectN
   class ComputerPlayer < Player
     include Winnable
 
-    attr_accessor :opponent_disc, :difficulty, :delay, :min_to_win
+    attr_accessor :difficulty, :delay
+    attr_reader :opponent_disc, :min_to_win
 
     def initialize(
       name: 'Computer',
@@ -59,14 +60,14 @@ module ConnectN
 
       return 0 if current_board.filled?
 
-      return heuristic(current_board) if depth.negative?
+      return heuristic(current_board) if depth <= 0
 
       if maximizing
         score = -Float::INFINITY
         @board.cols_amount.times do |pick|
           next unless current_board.valid_pick?(pick)
 
-          board_copy = current_board.dup
+          board_copy = current_board.clone
           i, j = board_copy.drop_disc(disc, at_col: pick)
           score = [
             score,
@@ -81,7 +82,7 @@ module ConnectN
         @board.cols_amount.times do |pick|
           next unless current_board.valid_pick?(pick)
 
-          board_copy = current_board.dup
+          board_copy = current_board.clone
           i, j = board_copy.drop_disc(opponent_disc, at_col: pick)
           score = [
             score,
@@ -98,7 +99,7 @@ module ConnectN
     def heuristic(current_board)
       value = 0
       opponent_value = 0
-      current_board.table.each do |row|
+      current_board.rows.each do |row|
         row.each_cons(min_to_win).each do |set_of_n|
           disc_count = set_of_n.count disc
           opponent_disc_count = set_of_n.count opponent_disc
