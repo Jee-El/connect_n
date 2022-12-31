@@ -14,10 +14,12 @@ module ConnectN
     end
 
     def launch
-      if !Game.saved_games.empty? && Game.resume?
-        game_name = Game.saved_game_name
-        @game = Game.load game_name
-        return Game.resume game
+      unless File.exist?('saved_games.yaml')
+        if !Game.saved_games('saved_games').empty? && Game.resume?
+          game_name = Game.saved_game_name
+          @game = Game.load game_name
+          return Game.resume game
+        end
       end
 
       setup_parameters

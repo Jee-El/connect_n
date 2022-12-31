@@ -13,19 +13,18 @@ module ConnectN
     include Displayable
     include Winnable
 
-    attr_reader :board, :players, :min_to_win
-
-    FILE_NAME = 'saved_games.yaml'
+    attr_reader :board, :players, :min_to_win, :saved_games_fn
 
     PERMITTED_CLASSES = [Symbol, Game, Board, HumanPlayer, ComputerPlayer]
 
-    @saved_games = YAML.safe_load_file(
-      FILE_NAME, permitted_classes: PERMITTED_CLASSES
-      ) || {}
-
-    def initialize(board, current_player, other_player, min_to_win: 4)
+    def initialize(
+      board:,
+      first_player:,
+      second_player:,
+      min_to_win: 4
+    )
       @board = board
-      @players = [current_player, other_player]
+      @players = [first_player, second_player]
       @min_to_win = min_to_win
     end
 
@@ -40,12 +39,12 @@ module ConnectN
 
         next invalid_pick unless board.valid_pick? pick
 
-        row, col, disc = board.drop_disc(current_player.disc, at_col: pick)
+        row_num, col_num, disc = board.drop_disc(current_player.disc, at_col: pick)
 
         clear_display
         board.draw
 
-        break over(current_player) if over?(board, row, col, disc)
+        break over(current_player) if over?(board, row_num, col_num, disc)
 
         players.rotate!
       end
@@ -63,20 +62,28 @@ module ConnectN
 
     def self.resume(game) = game.play
 
-    def self.saved_games = @saved_games
-
     def self.load(name) = saved_games[name.to_sym]
+
+    def self.saved_games(file_name)
+      return @saved_games if @saved_games
+
+      @file_name = file_name + '.yaml'
+
+      @saved_games = YAML.safe_load_file(
+        @file_name, permitted_classes: PERMITTED_CLASSES
+      ) || {}
+    end
 
     def self.reload_saved_games
       @saved_games = YAML.safe_load_file(
-        FILE_NAME, permitted_classes: PERMITTED_CLASSES
+        @file_name, permitted_classes: PERMITTED_CLASSES
       )
     end
 
     def self.save(game, name = gets.chomp)
       saved_games[name.to_sym] = game
       dumped = YAML.dump(saved_games)
-      File.write(FILE_NAME, dumped)
+      File.write(@file_name, dumped)
     end
 
     def self.saved_game_name
