@@ -13,7 +13,7 @@ module ConnectN
       @parameters = { human_players: [] }
     end
 
-    def launch_game
+    def launch
       if !Game.saved_games.empty? && Game.resume?
         game_name = Game.saved_game_name
         @game = Game.load game_name
@@ -47,7 +47,11 @@ module ConnectN
     end
 
     def min_to_win
-      PROMPT.ask 'Minimum number of aligned similar discs necessary to win : ', convert: :int
+      PROMPT.ask(
+        'Minimum number of aligned similar discs necessary to win : ',
+        convert: :int,
+        default: 4
+      )
     end
 
     def difficulty
@@ -75,20 +79,28 @@ module ConnectN
 
     def multiplayer_game
       human_players = multiplayer_players
-      ConnectFour::Game.new(Board.new, *players)
+      Game.new(
+        Board.new,
+        *players,
+        min_to_win: parameters[:min_to_win]
+      )
     end
 
     def single_player_game
       board = Board.new
       players = single_player_players(board)
-      ConnectFour::Game.new(board, *players)
+      Game.new(
+        board,
+        *players,
+        min_to_win: parameters[:min_to_win]
+      )
     end
 
     def multiplayer_players
       parameters[:human_players].map do |name, disc|
-        next ConnectFour::HumanPlayer.new(name: name, disc: disc) if disc
+        next HumanPlayer.new(name: name, disc: disc) if disc
 
-        ConnectFour::HumanPlayer.new(name: name)
+        HumanPlayer.new(name: name)
       end
     end
 
@@ -96,11 +108,16 @@ module ConnectN
       name, disc = parameters[:human_players].first
       players = [
         if disc
-          ConnectFour::HumanPlayer.new name: name, disc: disc
+          HumanPlayer.new name: name, disc: disc
         else
-          ConnectFour::HumanPlayer.new name: name
+          HumanPlayer.new name: name
         end,
-        ConnectFour::ComputerPlayer.new(board, difficulty: parameters[:difficulty])
+        ComputerPlayer.new(
+          board: board,
+          opponent_disc: disc,
+          min_to_win: parameters[:min_to_win],
+          difficulty: parameters[:difficulty]
+        )
       ]
       parameters[:human_starts?] ? players : players.rotate
     end
