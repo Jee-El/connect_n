@@ -64,31 +64,41 @@ module ConnectN
 
     def self.load(name) = saved_games[name.to_sym]
 
-    def self.saved_games(file_name)
+    def self.file_name = @file_name
+
+    def self.saved_games(file_name = nil)
       return @saved_games if @saved_games
 
       @file_name = file_name + '.yaml'
 
       @saved_games = YAML.safe_load_file(
-        @file_name, permitted_classes: PERMITTED_CLASSES
+        @file_name,
+        permitted_classes: PERMITTED_CLASSES,
+        aliases: true
       ) || {}
     end
 
     def self.reload_saved_games
       @saved_games = YAML.safe_load_file(
-        @file_name, permitted_classes: PERMITTED_CLASSES
+        @file_name,
+        permitted_classes: PERMITTED_CLASSES,
+        aliases: true
       )
     end
 
-    def self.save(game, name = gets.chomp)
+    def self.save(game, name = new_saved_game_name)
       saved_games[name.to_sym] = game
       dumped = YAML.dump(saved_games)
       File.write(@file_name, dumped)
     end
 
+    def self.new_saved_game_name
+      PROMPT.ask 'Name your saved game : '
+    end
+
     def self.saved_game_name
-      saved_games = saved_games.keys.with_index(1) { "#{_2} -> #{_1}" }
-      PROMPT.select 'Choose a saved game : ', saved_games, convert: :sym
+      saved_games_table = saved_games.keys.each.with_index(1) { "#{_2} -> #{_1}" }
+      PROMPT.select 'Choose a saved game : ', saved_games_table, convert: :sym
     end
   end
 end
