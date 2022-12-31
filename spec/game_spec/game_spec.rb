@@ -298,6 +298,7 @@ describe ConnectN::Game do
       before do
         described_class.file_name = file_name
         allow(ConnectN::PROMPT).to receive(:ask).and_return(saved_game_name)
+        allow(File).to receive(:write)
         described_class.save game
       end
 
