@@ -36,10 +36,10 @@ describe ConnectN::Game do
 
       it do
         expect(board).not_to receive(:filled?)
-        game.over?(board, row, col, no_disc)
+        game.over?(board, row_num, col_num, no_disc)
       end
 
-      it { expect(game.over?(board, row, col, no_disc)).to be true }
+      it { expect(game.over?(board, row_num, col_num, no_disc)).to be true }
     end
 
     context 'when a player has not won' do
@@ -50,15 +50,15 @@ describe ConnectN::Game do
 
         it do
           expect(game).to receive(:win?).once
-          game.over?(board, row, col, no_disc)
+          game.over?(board, row_num, col_num, no_disc)
         end
 
         it do
           expect(board).to receive(:filled?).once
-          game.over?(board, row, col, no_disc)
+          game.over?(board, row_num, col_num, no_disc)
         end
 
-        it { expect(game.over?(board, row, col, no_disc)).to be true }
+        it { expect(game.over?(board, row_num, col_num, no_disc)).to be true }
       end
 
       context 'when the board is not filled' do
@@ -66,15 +66,15 @@ describe ConnectN::Game do
 
         it do
           expect(game).to receive(:win?).once
-          game.over?(board, row, col, no_disc)
+          game.over?(board, row_num, col_num, no_disc)
         end
 
         it do
           expect(board).to receive(:filled?).once
-          game.over?(board, row, col, no_disc)
+          game.over?(board, row_num, col_num, no_disc)
         end
 
-        it { expect(game.over?(board, row, col, no_disc)).to be false }
+        it { expect(game.over?(board, row_num, col_num, no_disc)).to be false }
       end
     end
   end
@@ -89,8 +89,8 @@ describe ConnectN::Game do
           let(:winning_pick) { 3 }
 
           it 'returns true' do
-            row, col = board.drop_disc(fire, at_col: winning_pick)
-            expect(game.win?(board, row, col, fire)).to be true
+            row_num, col_num = board.drop_disc(fire, at_col: winning_pick)
+            expect(game.win?(board, row_num, col_num, fire)).to be true
           end
         end
 
@@ -99,8 +99,8 @@ describe ConnectN::Game do
           let(:not_winning_fire_pick) { 3 }
 
           it do
-            row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
-            expect(game.win?(board, row, col, fire)).to be false
+            row_num, col_num = board.drop_disc(fire, at_col: not_winning_fire_pick)
+            expect(game.win?(board, row_num, col_num, fire)).to be false
           end
         end
 
@@ -109,8 +109,8 @@ describe ConnectN::Game do
           let(:not_winning_fire_pick) { 2 }
 
           it do
-            row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
-            expect(game.win?(board, row, col, fire)).to be false
+            row_num, col_num = board.drop_disc(fire, at_col: not_winning_fire_pick)
+            expect(game.win?(board, row_num, col_num, fire)).to be false
           end
         end
 
@@ -119,8 +119,8 @@ describe ConnectN::Game do
           let(:not_winning_fire_pick) { 1 }
 
           it do
-            row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
-            expect(game.win?(board, row, col, fire)).to be false
+            row_num, col_num = board.drop_disc(fire, at_col: not_winning_fire_pick)
+            expect(game.win?(board, row_num, col_num, fire)).to be false
           end
         end
       end
@@ -133,8 +133,8 @@ describe ConnectN::Game do
           let(:winning_pick) { 5 }
 
           it do
-            row, col = board.drop_disc(fire, at_col: winning_pick)
-            expect(game.win?(board, row, col, fire)).to be true
+            row_num, col_num = board.drop_disc(fire, at_col: winning_pick)
+            expect(game.win?(board, row_num, col_num, fire)).to be true
           end
         end
 
@@ -143,8 +143,8 @@ describe ConnectN::Game do
           let(:not_winning_fire_pick) { 5 }
 
           it do
-            row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
-            expect(game.win?(board, row, col, fire)).to be false
+            row_num, col_num = board.drop_disc(fire, at_col: not_winning_fire_pick)
+            expect(game.win?(board, row_num, col_num, fire)).to be false
           end
         end
 
@@ -153,8 +153,8 @@ describe ConnectN::Game do
           let(:not_winning_fire_pick) { 5 }
 
           it do
-            row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
-            expect(game.win?(board, row, col, fire)).to be false
+            row_num, col_num = board.drop_disc(fire, at_col: not_winning_fire_pick)
+            expect(game.win?(board, row_num, col_num, fire)).to be false
           end
         end
 
@@ -163,8 +163,8 @@ describe ConnectN::Game do
           let(:not_winning_fire_pick) { 5 }
 
           it do
-            row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
-            expect(game.win?(board, row, col, fire)).to be false
+            row_num, col_num = board.drop_disc(fire, at_col: not_winning_fire_pick)
+            expect(game.win?(board, row_num, col_num, fire)).to be false
           end
         end
       end
@@ -181,8 +181,8 @@ describe ConnectN::Game do
             let(:winning_pick) { 3 }
 
             it do
-              row, col = board.drop_disc(fire, at_col: winning_pick)
-              expect(game.win?(board, row, col, fire)).to be true
+              row_num, col_num = board.drop_disc(fire, at_col: winning_pick)
+              expect(game.win?(board, row_num, col_num, fire)).to be true
             end
           end
 
@@ -191,8 +191,8 @@ describe ConnectN::Game do
             let(:not_winning_fire_pick) { 3 }
 
             it do
-              row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
-              expect(game.win?(board, row, col, fire)).to be false
+              row_num, col_num = board.drop_disc(fire, at_col: not_winning_fire_pick)
+              expect(game.win?(board, row_num, col_num, fire)).to be false
             end
           end
 
@@ -201,8 +201,8 @@ describe ConnectN::Game do
             let(:not_winning_fire_pick) { 2 }
 
             it do
-              row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
-              expect(game.win?(board, row, col, fire)).to be false
+              row_num, col_num = board.drop_disc(fire, at_col: not_winning_fire_pick)
+              expect(game.win?(board, row_num, col_num, fire)).to be false
             end
           end
 
@@ -211,8 +211,8 @@ describe ConnectN::Game do
             let(:not_winning_fire_pick) { 1 }
 
             it do
-              row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
-              expect(game.win?(board, row, col, fire)).to be false
+              row_num, col_num = board.drop_disc(fire, at_col: not_winning_fire_pick)
+              expect(game.win?(board, row_num, col_num, fire)).to be false
             end
           end
         end
@@ -228,8 +228,8 @@ describe ConnectN::Game do
             let(:winning_pick) { 3 }
 
             it do
-              row, col = board.drop_disc(fire, at_col: winning_pick)
-              expect(game.win?(board, row, col, fire)).to be true
+              row_num, col_num = board.drop_disc(fire, at_col: winning_pick)
+              expect(game.win?(board, row_num, col_num, fire)).to be true
             end
           end
 
@@ -238,8 +238,8 @@ describe ConnectN::Game do
             let(:not_winning_fire_pick) { 3 }
 
             it do
-              row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
-              expect(game.win?(board, row, col, fire)).to be false
+              row_num, col_num = board.drop_disc(fire, at_col: not_winning_fire_pick)
+              expect(game.win?(board, row_num, col_num, fire)).to be false
             end
           end
 
@@ -248,8 +248,8 @@ describe ConnectN::Game do
             let(:not_winning_fire_pick) { 2 }
 
             it do
-              row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
-              expect(game.win?(board, row, col, fire)).to be false
+              row_num, col_num = board.drop_disc(fire, at_col: not_winning_fire_pick)
+              expect(game.win?(board, row_num, col_num, fire)).to be false
             end
           end
 
@@ -258,8 +258,8 @@ describe ConnectN::Game do
             let(:not_winning_fire_pick) { 1 }
 
             it do
-              row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
-              expect(game.win?(board, row, col, fire)).to be false
+              row_num, col_num = board.drop_disc(fire, at_col: not_winning_fire_pick)
+              expect(game.win?(board, row_num, col_num, fire)).to be false
             end
           end
         end
@@ -275,8 +275,8 @@ describe ConnectN::Game do
       end
 
       it 'does not go around the board' do
-        row, col = board.drop_disc(fire, at_col: not_winning_fire_pick)
-        expect(game.win?(board, row, col, fire)).to be false
+        row_num, col_num = board.drop_disc(fire, at_col: not_winning_fire_pick)
+        expect(game.win?(board, row_num, col_num, fire)).to be false
       end
     end
   end
