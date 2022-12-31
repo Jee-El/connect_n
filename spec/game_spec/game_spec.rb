@@ -2,6 +2,7 @@
 
 require 'yaml'
 
+require_relative '../../lib/connect_n/prompt/prompt'
 require_relative '../../lib/connect_n/game/game'
 require_relative '../../lib/connect_n/board/board'
 require_relative '../../lib/connect_n/player/human_player/human_player'
@@ -277,38 +278,33 @@ describe ConnectN::Game do
     end
   end
 
-  describe '.save' do
+  describe '.load' do
     let(:file_name) { 'saved_games' }
     let(:saved_game_name) { 'game_1' }
 
-    before do
-      described_class.saved_games file_name
-      allow(described_class).to receive(:gets).and_return(saved_game_name)
-      allow(File).to receive(:write)
-      allow(YAML).to receive(:dump)
+    context 'if there is no such saved game' do
+      before do
+        described_class.file_name = file_name
+        allow(YAML).to receive(:safe_load_file)
+      end
+
+      it do
+        deserialized_game = described_class.load(saved_game_name)
+        expect(deserialized_game).to be_nil
+      end
     end
 
-    it 'adds a key-value pair of name-game to @saved_games' do
-      expect { described_class.save(game) }
-        .to change { described_class.saved_games.keys.length }.by(1)
-    end
+    context 'if there is such a saved game' do      
+      before do
+        described_class.file_name = file_name
+        allow(ConnectN::PROMPT).to receive(:ask).and_return(saved_game_name)
+        described_class.save game
+      end
 
-    it 'serializes the game object to saved_games.yaml' do
-      dumped_saved_games = YAML.dump(described_class.saved_games)
-      expect(File)
-        .to receive(:write)
-        .with(described_class.file_name, dumped_saved_games)
-        .once
-      described_class.save(game)
-    end
-  end
-
-  describe '.load' do
-    let(:saved_game_name) { 'game_1' }
-
-    it 'returns a Game instance"' do
-      deserialized_game = described_class.load(saved_game_name)
-      expect(deserialized_game).to be_an(described_class)
+      it 'returns a Game instance' do
+        deserialized_game = described_class.load(saved_game_name)
+        expect(deserialized_game).to be_an(described_class)
+      end
     end
   end
 
@@ -316,8 +312,8 @@ describe ConnectN::Game do
     let(:file_name) { 'saved_games' }
 
     before do
+      described_class.file_name = file_name
       allow(YAML).to receive(:safe_load_file)
-      described_class.saved_games file_name
     end
 
     it 'updates the contents of @saved_games' do
@@ -325,7 +321,7 @@ describe ConnectN::Game do
         .to receive(:safe_load_file)
         .with(
           described_class.file_name,
-          { permitted_classes: described_class::PERMITTED_CLASSES }
+          { permitted_classes: described_class::PERMITTED_CLASSES, aliases: true }
         ).once
       described_class.reload_saved_games
     end
@@ -353,6 +349,33 @@ describe ConnectN::Game do
       let(:user_input) { '5' }
 
       it { expect(game.save?(user_input)).to be false }
+    end
+  end
+
+  describe '.save' do
+    let(:file_name) { 'saved_games' }
+    let(:saved_game_name) { 'game_1' }
+
+    before do
+      described_class.file_name = file_name
+      allow(ConnectN::PROMPT).to receive(:ask).and_return(saved_game_name)
+      allow(YAML).to receive(:safe_load_file)
+      allow(File).to receive(:write)
+      allow(YAML).to receive(:dump)
+    end
+
+    it 'adds a key-value pair of name-game to @saved_games' do
+      expect { described_class.save(game) }
+        .to change { described_class.saved_games.keys.length }.by(1)
+    end
+
+    it 'serializes the game object to saved_games.yaml' do
+      dumped_saved_games = YAML.dump(described_class.saved_games)
+      expect(File)
+        .to receive(:write)
+        .with(described_class.file_name, dumped_saved_games)
+        .once
+      described_class.save(game)
     end
   end
 end
