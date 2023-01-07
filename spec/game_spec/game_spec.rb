@@ -320,17 +320,17 @@ describe ConnectN::Game do
     end
   end
 
-  describe '#save?' do
+  describe '.save?' do
     context 'when the user wants to save' do
       let(:user_input) { ':w' }
 
-      it { expect(game.save?(user_input)).to be true }
+      it { expect(described_class.save?(user_input)).to be true }
     end
 
     context 'when the user does not want to save' do
       let(:user_input) { '5' }
 
-      it { expect(game.save?(user_input)).to be false }
+      it { expect(described_class.save?(user_input)).to be false }
     end
   end
 

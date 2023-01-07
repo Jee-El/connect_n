@@ -35,7 +35,7 @@ module ConnectN
 
         pick = current_player.pick
 
-        break self.class.save(self) if save? pick
+        break self.class.save(self) if self.class.save? pick
 
         next invalid_pick unless board.valid_pick? pick
 
@@ -54,7 +54,7 @@ module ConnectN
 
     def play_again? = PROMPT.yes? 'Would you like to play again?'
 
-    def save?(input) = input == ':w'
+    def self.save?(input) = input == ':w'
 
     def self.resume? = PROMPT.yes? 'Do you want to resume a game?'
 
