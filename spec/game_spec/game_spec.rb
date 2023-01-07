@@ -2,7 +2,6 @@
 
 require 'yaml'
 
-require_relative '../../lib/connect_n/prompt/prompt'
 require_relative '../../lib/connect_n/game/game'
 require_relative '../../lib/connect_n/board/board'
 require_relative '../../lib/connect_n/player/human_player/human_player'
@@ -280,51 +279,33 @@ describe ConnectN::Game do
 
   describe '.load' do
     let(:file_name) { 'saved_games' }
-    let(:saved_game_name) { 'game_1' }
+    let(:game_name) { 'game_1' }
 
     context 'if there is no such saved game' do
       before do
-        described_class.file_name = file_name
         allow(YAML).to receive(:safe_load_file)
       end
 
       it do
-        deserialized_game = described_class.load(saved_game_name)
+        deserialized_game = described_class.load(
+          game_name, file_name
+        )
         expect(deserialized_game).to be_nil
       end
     end
 
-    context 'if there is such a saved game' do      
+    context 'if there is such a saved game' do
       before do
-        described_class.file_name = file_name
-        allow(ConnectN::PROMPT).to receive(:ask).and_return(saved_game_name)
-        allow(File).to receive(:write)
-        described_class.save game
+        allow(YAML).to receive(:safe_load_file).and_return({game_name.to_sym => game})
       end
 
       it 'returns a Game instance' do
-        deserialized_game = described_class.load(saved_game_name)
+        deserialized_game = described_class.load(
+          game_name,
+          file_name
+        )
         expect(deserialized_game).to be_an(described_class)
       end
-    end
-  end
-
-  describe '.reload_saved_games' do
-    let(:file_name) { 'saved_games' }
-
-    before do
-      described_class.file_name = file_name
-      allow(YAML).to receive(:safe_load_file)
-    end
-
-    it 'updates the contents of @saved_games' do
-      expect(YAML)
-        .to receive(:safe_load_file)
-        .with(
-          described_class.file_name,
-          { permitted_classes: described_class::PERMITTED_CLASSES, aliases: true }
-        ).once
-      described_class.reload_saved_games
     end
   end
 
@@ -355,28 +336,20 @@ describe ConnectN::Game do
 
   describe '.save' do
     let(:file_name) { 'saved_games' }
-    let(:saved_game_name) { 'game_1' }
+    let(:game_name) { 'game_1' }
 
     before do
-      described_class.file_name = file_name
-      allow(ConnectN::PROMPT).to receive(:ask).and_return(saved_game_name)
       allow(YAML).to receive(:safe_load_file)
-      allow(File).to receive(:write)
       allow(YAML).to receive(:dump)
+      allow(File).to receive(:write)
     end
 
-    it 'adds a key-value pair of name-game to @saved_games' do
-      expect { described_class.save(game) }
-        .to change { described_class.saved_games.keys.length }.by(1)
-    end
-
-    it 'serializes the game object to saved_games.yaml' do
-      dumped_saved_games = YAML.dump(described_class.saved_games)
+    it 'serializes the game object' do
       expect(File)
         .to receive(:write)
-        .with(described_class.file_name, dumped_saved_games)
+        .with(file_name, any_args)
         .once
-      described_class.save(game)
+      described_class.save(game, game_name, file_name)
     end
   end
 end

@@ -13,7 +13,7 @@ module ConnectN
     include Displayable
     include Winnable
 
-    attr_reader :board, :players, :min_to_win, :saved_games_fn
+    attr_reader :board, :players, :min_to_win
 
     PERMITTED_CLASSES = [Symbol, Game, Board, HumanPlayer, ComputerPlayer]
 
@@ -50,9 +50,7 @@ module ConnectN
       end
     end
 
-    def over?(board, row, col, disc)
-      win?(board, row, col, disc) || board.filled?
-    end
+    def over?(board, row, col, disc) = win?(board, row, col, disc) || board.filled?
 
     def play_again? = PROMPT.yes? 'Would you like to play again?'
 
@@ -62,39 +60,28 @@ module ConnectN
 
     def self.resume(game) = game.play
 
-    def self.load(name) = saved_games[name.to_sym]
+    def self.load(name, file_name) = games(file_name)[name.to_sym]
 
-    def self.file_name = @file_name
-
-    def self.file_name=(name)
-      @file_name = name
-    end
-
-    def self.saved_games
-      @saved_games || reload_saved_games
-    end
-
-    def self.reload_saved_games
-      @saved_games = YAML.safe_load_file(
-        @file_name,
+    def self.games(file_name)
+      YAML.safe_load_file(
+        file_name,
         permitted_classes: PERMITTED_CLASSES,
         aliases: true
       ) || {}
     end
 
-    def self.save(game, name = new_saved_game_name)
-      saved_games[name.to_sym] = game
-      dumped = YAML.dump(saved_games)
-      File.write(@file_name, dumped)
+    def self.save(game, name, file_name)
+      games = games(file_name)
+      games[name.to_sym] = game
+      dumped_games = YAML.dump(games)
+      File.write(file_name, dumped_games)
     end
 
-    def self.new_saved_game_name
-      PROMPT.ask 'Name your saved game : '
-    end
+    def self.game_name = PROMPT.ask('Name your saved game : ')
 
-    def self.saved_game_name
-      saved_games_table = saved_games.keys.each.with_index(1) { "#{_2} -> #{_1}" }
-      PROMPT.select 'Choose a saved game : ', saved_games_table, convert: :sym
+    def self.list_games(file_name)
+      games = games(file_name).keys.each.with_index(1) { "#{_2} -> #{_1}" }
+      PROMPT.select 'Choose a saved game : ', games, convert: :sym
     end
   end
 end
