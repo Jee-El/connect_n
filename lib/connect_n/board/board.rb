@@ -4,12 +4,12 @@ module ConnectN
   class Board
     attr_reader :table, :empty_disc, :cols_amount, :rows_amount
 
-    def initialize(cols_amount: 7, rows_amount: 6, empty_disc: '⚪')
+    def initialize(rows_amount: 6, cols_amount: 7, empty_disc: '⚪')
       @empty_disc = empty_disc
 
-      @cols_amount = cols_amount
-
       @rows_amount = rows_amount
+
+      @cols_amount = cols_amount
 
       @table = Array.new(rows_amount) { Array.new(cols_amount) { empty_disc } }
     end
