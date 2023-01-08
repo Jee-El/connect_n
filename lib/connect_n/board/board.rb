@@ -21,13 +21,13 @@ module ConnectN
     end
 
     def drop_disc(disc, at_col:)
-      row_num = col(at_col).index(empty_disc)
-      row(row_num)[at_col] = disc
+      row_num = col_at(at_col).index(empty_disc)
+      row_at(row_num)[at_col] = disc
       [row_num, at_col, disc]
     end
 
     def valid_pick?(pick)
-      valid_col?(pick) and col(pick).include?(empty_disc)
+      valid_col?(pick) and col_at(pick).include?(empty_disc)
     end
 
     def filled?
@@ -40,27 +40,27 @@ module ConnectN
       draw_col_nums
     end
 
-    def cell(row_num, col_num)
+    def cell_at(row_num, col_num)
       return unless valid_cell?(row_num, col_num)
 
-      row(row_num)[col_num]
+      row_at(row_num)[col_num]
     end
 
     def cols = table.transpose.map(&:reverse)
 
     def rows = table
 
-    def col(col_num)
-      return unless valid_col?(col_num)
+    def col_at(n)
+      return unless valid_col?(n)
 
-      table.transpose[col_num].reverse
+      table.transpose[n].reverse
     end
 
-    def row(row_num)
-      return unless valid_row?(row_num)
+    def row_at(n)
+      return unless valid_row?(n)
 
-      row_num = rows_amount - 1 - row_num
-      table[row_num]
+      n = rows_amount - 1 - n
+      table[n]
     end
 
     private
@@ -85,8 +85,8 @@ module ConnectN
 
     def valid_cell?(row_num, col_num) = valid_row?(row_num) && valid_col?(col_num)
 
-    def valid_row?(row_num) = row_num.between?(0, rows_amount - 1)
+    def valid_row?(n) = n.between?(0, rows_amount - 1)
       
-    def valid_col?(col_num) = col_num.between?(0, cols_amount - 1)
+    def valid_col?(n) = n.between?(0, cols_amount - 1)
   end
 end

@@ -25,7 +25,7 @@ module ConnectN
     # Count similar discs on the left side
     def l_discs(board, row_num, col_num, disc, k)
       range = (1...min_to_win)
-      amount = range.find { |i| board.cell(row_num - k * i, col_num - i) != disc }
+      amount = range.find { |i| board.cell_at(row_num - k * i, col_num - i) != disc }
 
       # amount can be nil if there are more similar discs than min_to_win
       # in which case it should count as a win
@@ -38,7 +38,7 @@ module ConnectN
     # Count similar discs on the right side
     def r_discs(board, row_num, col_num, disc, k)
       range = (1...min_to_win)
-      amount = range.find { |i| board.cell(row_num + k * i, col_num + i) != disc }
+      amount = range.find { |i| board.cell_at(row_num + k * i, col_num + i) != disc }
 
       # amount can be nil if there are more similar discs than min_to_win
       # in which case it should count as a win
@@ -52,7 +52,7 @@ module ConnectN
     def v_discs(board, row_num, col_num, disc)
       range = (1...min_to_win)
       amount = range.find do |i|
-        board.cell(row_num - i, col_num) != disc
+        board.cell_at(row_num - i, col_num) != disc
       end
 
       # amount can be nil if there are more similar discs than min_to_win
