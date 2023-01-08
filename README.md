@@ -24,9 +24,9 @@ Or install it directly by running :
 
   - [Board](#board)
 
-    - [#cell](#cell)
+    - [#cell_at](#cell_at)
 
-    - [#col](#col)
+    - [#col_at](#col_at)
 
     - [#cols](#cols)
 
@@ -48,16 +48,6 @@ Or install it directly by running :
 
     - [#launch](#launch)
 
-  - [Displayable](#displayable)
-
-    - [#clear_display](#clear_display)
-
-    - [#invalid_pick](#invalid_pick)
-
-    - [#over](#over)
-
-    - [#welcome](#welcome)
-
   - [Game](#game)
 
     - [::games](#games)
@@ -76,13 +66,21 @@ Or install it directly by running :
 
     - [::resume?](#resume?)
 
+    - [#clear_display](#clear_display)
+
     - [#initialize](#initialize-1)
+
+    - [#invalid_pick](#invalid_pick)
 
     - [#play](#play)
 
     - [#play_again?](#play_again?)
 
+    - [#over](#over)
+
     - [#over?](#over?)
+
+    - [#welcome](#welcome)
 
   - [Player](#player)
 
@@ -118,299 +116,179 @@ It is made of a combination of minimax algorithm, alpha-beta pruning, and the he
 
 ### Board
 
-#### cell
+#### cell_at
+
+`board.cell_at(row_num, col_num) -> object or nil`
+
+Returns the board cell at coordinates (row_num, col_num), `self` is not modified.
+
+If `row_num` (or resp. `col_num`) is not an `Integer` in the range `0..rows_amount-1` (or resp. `0..cols_amount-1`), returns `nil`.
+
+**_Notes_** :
+
+- The 1st cell, at (0, 0), is the one in the bottom left corner.
 
 ```ruby
-
-# Syntax : board.cell(row_num, col_num)
-
-# Argument data types : Integer, Integer
-
-# Side effects : None
-
-# Return :
-
-  # If row_num & col_nums are, respectively, in the ranges 0..rows_amount-1 & 0..cols_amounts :
-
-    # It returns the board cell at coordinates (row_num, cell_num)
-
-  # Else :
-
-    # It returns nil
-
-# Notes :
-
-  # The first cell is the bottom left corner one.
-
-# Example :
-
-board = Board.new
-bottom_left_cell = board.cell(0, 0)
+board = ConnectN::Board.new
+bottom_left_corner_cell = board.cell_at(0, 0) #=> '⚪'
 ```
 
-#### col
+#### col_at
+
+`board.col_at(n) -> Array or nil`
+
+Returns the board's `nth` column, `self` is not modified.
+
+If `n` is not an `Integer` in the range `0..cols_amount-1`, returns `nil`.
+
+**_Notes_** :
+
+- The 1st column, at (0), is the one on the far left.
+
+- The column elements are ordered bottom-to-top.
 
 ```ruby
-
-# Syntax : board.col(col_num)
-
-# Argument data type : Integer
-
-# Side effects : None
-
-# Return :
-
-  # If col_num is in the range 0..cols_amount-1 :
-
-    # It returns the col_numth of the board
-
-  # Else :
-
-    # It returns nil
-
-# Notes :
-
-  # The column elements are ordered bottom-to-top
-
-  # The first column is the one on the far left.
-
-# Example :
-
-board = Board.new
-far_left_col = board.col(0)
-
+board = ConnectN::Board.new
+far_left_col = board.col_at(0) #=> ['⚪', '⚪', '⚪', '⚪', '⚪', '⚪']
 ```
 
 ### cols
 
+`board.cols -> 2D Array`
+
+Returns the board's columns, `self` is not modified.
+
+**_Notes_** :
+
+- The 1st column is the one on the far left.
+
+- Each column's elements are ordered bottom-to-top.
+
 ```ruby
-
-# Syntax : board.cols
-
-# Argument data type : None
-
-# Side effects : None
-
-# Return :
-
-  # a 2D Array containing the board's columns
-
-# Notes :
-
-  # Each column's elements are ordered bottom-to-top
-
-  # The first column is the one on the far left
-
-# Example :
-
-board = Board.new
+board = ConnectN::Board.new
 cols = board.cols
-
 ```
 
 ### draw
 
+`board.draw -> nil`
+
+Returns `nil`.
+
+Outputs the board in a table-format to stdout.
+
 ```ruby
-
-# Syntax : board.draw
-
-# Argument data type : None
-
-# Side effects : Outputs the board to stdout in a table-format
-
-# Return :
-
-  # nil
-
-# Notes :
-
-  # None
-
-# Example :
-
-board = Board.new
+board = ConnectN::Board.new
 board.draw
-
 ```
 
 ### drop_disc
 
+`board.drop_disc(disc, at_col:) -> Array`
+
+Modifies `self` by dropping `disc` at the board's column number `at_col`.
+
+Returns an array of length 3 `[row_num, col_num, disc]`.
+
+The 1st 2 elements represent the coordinates of the cell at which the disc was dropped, the third element is the dropped disc.
+
+**_Notes_** :
+
+- If the given `at_col` refers to a filled column, an exception is raised.
+
 ```ruby
-
-# Syntax : board.drop_disc(disc, at_col:)
-
-# Argument data type : Integer, at_col: Integer
-
-# Side effects : Mutates the board so it contains the dropped disc at the column with the given number.
-
-# Return :
-
-  # An array [row_num, at_col, disc]
-
-    # row_num -> the row number at which the disc was dropped
-
-    # at_col the passed-in at_col value
-
-    # disc is the passed-in disc value
-
-# Notes :
-
-  # The given at_col value must not match the number of a filled column, so validating the input with #valid_pick? first is recommended.
-
-# Example :
-
-board = Board.new
+board = ConnectN::Board.new
 board.drop_disc('🔥', at_col: 0) #=> [0, 0, '🔥']
-
 ```
 
 ### filled?
 
+`board.filled? -> true or false`
+
+Returns true if the board is filled, returns false otherwise.
+
 ```ruby
-
-# Syntax : board.filled?
-
-# Argument data type : None
-
-# Side effects : None
-
-# Return :
-
-  # If the board is filled :
-
-    # it returns true
-
-  # Else :
-
-    # it returns false
-
-# Notes :
-
-  # None
-
-# Example :
-
-board = Board.new
+board = ConnectN::Board.new
 board.filled? #=> false
-
 ```
 
 ### initialize
 
+`Board.new(rows_amount: 6, cols_amount: 7, empty_disc: '⚪' -> Board`
+
+Returns a `Board` instance with the dimensions `rows_amount x cols_amount`, with each cell containing the value of `empty_disc`.
+
+**_Notes_** :
+
+- `rows_amount` & `cols_amount` must be a `Float` or `Integer` >= 0
+
+- `empty_disc` can be any object.
+
 ```ruby
-
-# Syntax : board.new(rows_amount: 6, cols_amount: 7, empty_disc: '⚪')
-
-# Argument data type : rows_amount: Integer, cols_amount: Integer, empty_disc: Object
-
-# Side effects : None
-
-# Return :
-
-  # Board instance
-
-# Notes :
-
-  # rows_amount >= 0
-
-  # cols_amount >= 0
-
-# Example :
-
-default_board = Board.new #=> 6x7 board
-board = Board.new rows_amount: 9, cols_amount: 9 #=> 9x9 board
-
+default_board = ConnectN::Board.new #=> 6x7 board
+board = ConnectN::Board.new rows_amount: 9, cols_amount: 9 #=> 9x9 board
 ```
 
-#### row
+#### row_at
+
+`board.row_at(n) -> Array or nil`
+
+Returns the board's `nth` row, `self` is not modified.
+
+If `n` is not in the range `0..cols_amount-1`, returns `nil`.
+
+**_Notes_** :
+
+- The 1st row, at (0), is the one in the bottom of the board.
+
+- The row elements are ordered left-to-right.
 
 ```ruby
-
-# Syntax : board.row(row_num)
-
-# Argument data type : Integer
-
-# Side effects : None
-
-# Return :
-
-  # If row_num is in the range 0..rows_amount-1 :
-
-    # It returns the row_numth of the board
-
-  # Else :
-
-    # It returns nil
-
-# Notes :
-
-  # The column elements are ordered left-to-right
-
-  # The first row is the one in the bottom.
-
-# Example :
-
-board = Board.new
-bottom_row = board.row(0)
-
+board = ConnectN::Board.new
+bottom_row = board.row_at(0) #=> ['⚪', '⚪', '⚪', '⚪', '⚪', '⚪', '⚪']
 ```
 
 ### rows
 
+`board.rows -> 2D Array`
+
+Returns the board's rows, `self` is not modified.
+
+**_Notes_** :
+
+- The 1st row is the one in the bottom of the board.
+
+- Each row's elements are ordered left-to-right.
+
 ```ruby
-
-# Syntax : board.rows
-
-# Argument data type : None
-
-# Side effects : None
-
-# Return :
-
-  # a 2D Array containing the board's rows
-
-# Notes :
-
-  # Each rows's elements are ordered left-to-right
-
-  # The first row is the one in the bottom
-
-# Example :
-
-board = Board.new
+board = ConnectN::Board.new
 rows = board.rows
-
 ```
 
 ### valid_pick?
 
+`board.valid_pick?(pick) -> true or false`
+
+Returns `true` if `pick` is a valid column number, i.e the column is not filled nor outside of the range `0..cols_amount-1`. `self` is not modified.
+
 ```ruby
-
-# Syntax : board.valid_pick?(pick)
-
-# Argument data type : Integer
-
-# Side effects : None
-
-# Return :
-
-  # If it is a valid pick :
-
-    # it returns true
-
-  # Else :
-
-    # it returns false
-
-# Notes :
-
-  # A valid pick must be in the range 0..cols_amount-1,
-
-  # And the column at the pick must not be filled
-
-# Example :
-
-board = Board.new
+board = ConnectN::Board.new
 board.valid_pick?(3) #=> true
+```
 
+## Demo
+
+**_Notes_** :
+
+- `Demo`'s purpose is to show all features of the gem and to give you an idea on how you could use it to build your own custom connect_n game.
+
+### launch
+
+`demo.launch -> `
+
+Runs a game demo.
+
+```ruby
+demo = ConnectN::Demo.new
+demo.launch
 ```
