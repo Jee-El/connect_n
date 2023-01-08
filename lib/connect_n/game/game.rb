@@ -1,16 +1,15 @@
 # frozen_string_literal: true
 
+require 'tty-box'
 require 'yaml'
 
 require_relative '../player/human_player/human_player'
 require_relative '../player/computer_player/computer_player'
 require_relative '../board/board'
 require_relative '../winnable/winnable'
-require_relative '../displayable/displayable'
 
 module ConnectN
   class Game
-    include Displayable
     include Winnable
 
     attr_reader :board, :players, :min_to_win
@@ -82,6 +81,34 @@ module ConnectN
     def self.list_games(file_name)
       games = games(file_name).keys.each.with_index(1) { "#{_2} -> #{_1}" }
       PROMPT.select 'Choose a saved game : ', games, convert: :sym
+    end
+
+    def welcome
+      text = <<~TEXT
+        Welcome to Connect Four
+        #{'    '}
+        To play, Enter a number from 1
+        to #{board.cols_amount}
+        The number corresponds to the
+        column order starting from the
+        left.
+        Enter anything to proceed.
+      TEXT
+      puts TTY::Box.frame text, padding: 2, align: :center
+      board.draw
+    end
+
+    def invalid_pick
+      PROMPT.error 'Invalid Column Number'
+    end
+
+    def over(winner)
+      phrase = board.filled? ? 'It is a tie!' : "#{winner.name} has won!"
+      puts TTY::Box.sucess(phrase)
+    end
+
+    def clear_display
+      puts "\e[1;1H\e[2J"
     end
   end
 end
