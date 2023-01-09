@@ -76,10 +76,8 @@ module ConnectN
       File.write(file_name, dumped_games)
     end
 
-    def self.game_name = PROMPT.ask('Name your saved game : ')
-
-    def self.list_games(file_name)
-      games = games(file_name).keys.each.with_index(1) { "#{_2} -> #{_1}" }
+    def self.pick_game_name(file_name)
+      games = games(file_name).keys.map.with_index(1) { "#{_2} -> #{_1}" }
       PROMPT.select 'Choose a saved game : ', games, convert: :sym
     end
 
@@ -106,6 +104,8 @@ module ConnectN
       phrase = board.filled? ? 'It is a tie!' : "#{winner.name} has won!"
       puts TTY::Box.sucess(phrase)
     end
+
+    private
 
     def clear_display
       puts "\e[1;1H\e[2J"
