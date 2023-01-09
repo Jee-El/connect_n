@@ -27,14 +27,14 @@ module ConnectN
       @min_to_win = min_to_win
     end
 
-    def play
+    def play(yaml_fn = nil)
       welcome(board)
       loop do
         current_player = players.first
 
         pick = current_player.pick
 
-        break self.class.save(self) if self.class.save? pick
+        break self.class.save(self, self.class.name_game, yaml_fn) if self.class.save? pick
 
         next invalid_pick unless board.valid_pick? pick
 
@@ -59,25 +59,27 @@ module ConnectN
 
     def self.resume(game) = game.play
 
-    def self.load(name, file_name) = games(file_name)[name.to_sym]
+    def self.load(name, yaml_fn) = games(yaml_fn)[name.to_sym]
 
-    def self.games(file_name)
+    def self.games(yaml_fn)
       YAML.safe_load_file(
-        file_name,
+        yaml_fn,
         permitted_classes: PERMITTED_CLASSES,
         aliases: true
       ) || {}
     end
 
-    def self.save(game, name, file_name)
-      games = games(file_name)
+    def self.save(game, name, yaml_fn)
+      games = games(yaml_fn)
       games[name.to_sym] = game
       dumped_games = YAML.dump(games)
-      File.write(file_name, dumped_games)
+      File.write(yaml_fn, dumped_games)
     end
 
-    def self.pick_game_name(file_name)
-      games = games(file_name).keys.map.with_index(1) { "#{_2} -> #{_1}" }
+    def self.name_game = PROMPT.ask 'Name your game : '
+
+    def self.select_game_name(yaml_fn)
+      games = games(yaml_fn).keys.map.with_index(1) { "#{_2} -> #{_1}" }
       PROMPT.select 'Choose a saved game : ', games, convert: :sym
     end
 

@@ -14,9 +14,9 @@ module ConnectN
     end
 
     def launch
-      if !Game.saved_games('connect_n_saved_games').empty? && Game.resume?
-        game_name = Game.saved_game_name
-        @game = Game.load game_name
+      if !Game.games('connect_n_saved_games.yaml').empty? && Game.resume?
+        game_name = Game.pick_game_name
+        @game = Game.load game_name, 'connect_n_saved_games.yaml'
         return Game.resume game
       end
 
@@ -26,7 +26,7 @@ module ConnectN
               else
                 single_player_game
               end
-      game.play
+      game.play('connect_n_saved_games.yaml')
     end
 
     private
