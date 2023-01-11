@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../../../lib/connect_n/prompt/prompt'
 require_relative '../../../lib/connect_n/player/human_player/human_player'
 

@@ -296,7 +296,7 @@ describe ConnectN::Game do
 
     context 'if there is such a saved game' do
       before do
-        allow(YAML).to receive(:safe_load_file).and_return({game_name.to_sym => game})
+        allow(YAML).to receive(:safe_load_file).and_return({ game_name.to_sym => game })
       end
 
       it 'returns a Game instance' do

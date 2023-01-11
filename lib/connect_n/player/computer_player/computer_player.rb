@@ -11,13 +11,11 @@ module ConnectN
     attr_reader :opponent_disc, :min_to_win
 
     def initialize(
-      name: 'Computer',
+      board:, opponent_disc:, name: 'Computer',
       disc: '🧊',
       min_to_win: 4,
       difficulty: 0,
-      delay: 0,
-      board:,
-      opponent_disc:
+      delay: 0
     )
       super(name: name, disc: disc)
       @min_to_win = min_to_win
@@ -25,7 +23,7 @@ module ConnectN
       @delay = delay
       @board = board
       @opponent_disc = opponent_disc
-      @scores = { disc => 10000, opponent_disc => -10000 }
+      @scores = { disc => 10_000, opponent_disc => -10_000 }
     end
 
     def pick
@@ -91,7 +89,8 @@ module ConnectN
           row_num, col_num = board_copy.drop_disc(opponent_disc, at_col: pick)
           score = [
             score,
-            minimax(board_copy, opponent_disc, row_num, col_num, moves_counter + 1, alpha, beta, depth - 1, maximizing: true)
+            minimax(board_copy, opponent_disc, row_num, col_num, moves_counter + 1, alpha, beta, depth - 1,
+                    maximizing: true)
           ].min
           break if score <= alpha
 

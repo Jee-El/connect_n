@@ -58,7 +58,7 @@ module ConnectN
       # amount can be nil if there are more similar discs than min_to_win
       # in which case it should count as a win
       amount ||= min_to_win
-      
+
       # Subtract the dropped disc
       amount -= 1
     end

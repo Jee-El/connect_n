@@ -8,7 +8,7 @@ module ConnectN
   class HumanPlayer < Player
     attr_accessor :save_key
 
-    def initialize(name: 'Human', disc: '🔥', save_key: ':w') 
+    def initialize(name: 'Human', disc: '🔥', save_key: ':w')
       @save_key = save_key
       super name: name, disc: disc
     end
