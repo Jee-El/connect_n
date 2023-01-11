@@ -49,17 +49,29 @@ module ConnectN
       end
     end
 
-    def over?(board, row, col, disc) = win?(board, row, col, disc) || board.filled?
+    def over?(board, row, col, disc)
+      win?(board, row, col, disc) || board.filled?
+    end
 
-    def play_again? = PROMPT.yes? 'Would you like to play again?'
+    def play_again?
+      PROMPT.yes? 'Would you like to play again?'
+    end
 
-    def self.save?(input) = input == ':w'
+    def self.save?(input)
+      input == ':w'
+    end
 
-    def self.resume? = PROMPT.yes? 'Do you want to resume a game?'
+    def self.resume?
+      PROMPT.yes? 'Do you want to resume a game?'
+    end
 
-    def self.resume(game) = game.play
+    def self.resume(game)
+      game.play
+    end
 
-    def self.load(name, yaml_fn) = games(yaml_fn)[name.to_sym]
+    def self.load(name, yaml_fn)
+      games(yaml_fn)[name.to_sym]
+    end
 
     def self.games(yaml_fn)
       YAML.safe_load_file(
@@ -76,7 +88,9 @@ module ConnectN
       File.write(yaml_fn, dumped_games)
     end
 
-    def self.name_game = PROMPT.ask 'Name your game : '
+    def self.name_game
+      PROMPT.ask 'Name your game : '
+    end
 
     def self.select_game_name(yaml_fn)
       games = games(yaml_fn).keys.map.with_index(1) { "#{_2} -> #{_1}" }

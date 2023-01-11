@@ -46,9 +46,13 @@ module ConnectN
       row_at(row_num)[col_num]
     end
 
-    def cols = table.transpose.map(&:reverse)
+    def cols
+      table.transpose.map(&:reverse)
+    end
 
-    def rows = table
+    def rows
+      table
+    end
 
     def col_at(n)
       return unless valid_col?(n)
@@ -83,10 +87,16 @@ module ConnectN
       puts
     end
 
-    def valid_cell?(row_num, col_num) = valid_row?(row_num) && valid_col?(col_num)
+    def valid_cell?(row_num, col_num)
+      valid_row?(row_num) && valid_col?(col_num)
+    end
 
-    def valid_row?(n) = n.between?(0, rows_amount - 1)
+    def valid_row?(n)
+      n.between?(0, rows_amount - 1)
+    end
       
-    def valid_col?(n) = n.between?(0, cols_amount - 1)
+    def valid_col?(n)
+      n.between?(0, cols_amount - 1)
+    end
   end
 end
