@@ -28,7 +28,7 @@ module ConnectN
     end
 
     def play(yaml_fn = nil)
-      welcome(board)
+      welcome
       loop do
         current_player = players.first
 
