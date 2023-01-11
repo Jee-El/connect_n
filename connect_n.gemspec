@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'connect_n'
-  s.version     = '0.0.2'
+  s.version     = '0.0.3'
   s.summary     = 'Connect-N!'
   s.description =
     'A more general version of connect-4 where you try to connect N similar discs. It comes with several features and a friendly API that allows you to customize the game however you want!'
@@ -24,5 +24,5 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
   s.add_runtime_dependency 'tty-box', '~> 0.7.0'
   s.add_runtime_dependency 'tty-prompt', '~> 0.23.1'
-  s.required_ruby_version = '>= 2.7.0'
+  s.required_ruby_version = '>= 3.0.0'
 end
