@@ -23,7 +23,7 @@ gem install connect_n
 # Contents
 
 - [1. What I learnt](#1-what-i-learnt)
-- [2. ComputerPlayer's mechanism](#2-computerplayer-mechanism)
+- [2. ComputerPlayer's mechanism](#2-computerplayers-mechanism)
 - [3. Documentation](#3-documentation)
   - [3.1 Board](#31-board)
     - [3.1.1 ::new](#317-new)
@@ -55,12 +55,12 @@ gem install connect_n
     - [3.3.13 #over?](#3313-over?)
     - [3.3.14 #welcome](#3314-welcome)
   - [3.4 Player](#34-player)
-    - [3.4.1 #initialize](#341-initialize)
+    - [3.4.1 ::new](#341-initialize)
   - [3.5 HumanPlayer](#35-humanplayer)
-    - [3.5.1 #initialize](#351-initialize-3)
+    - [3.5.1 ::new](#351-initialize-3)
     - [3.5.2 #pick](#352-pick)
   - [3.6 ComputerPlayer](#36-computerplayer)
-    - [3.6.1 #initialize](#361-initialize)
+    - [3.6.1 ::new](#361-initialize)
     - [3.6.2 #pick](#362-pick)
   - [3.7 Winnable](#37-winnable)
     - [3.7.1 #win?](#371-win?)
@@ -81,7 +81,7 @@ It is made of a combination of minimax algorithm, alpha-beta pruning, and the he
 
 ### 3.1.1 ::new
 
-`ConnectN::Board.new(rows_amount: 6, cols_amount: 7, empty_disc: '⚪' -> Board`
+`ConnectN::Board.new(rows_amount: 6, cols_amount: 7, empty_disc: '⚪' -> ConnectN::Board`
 
 Returns a `Board` instance with the dimensions `rows_amount x cols_amount`, with each cell containing the value of `empty_disc`.
 
@@ -249,7 +249,7 @@ board.valid_pick?(3) #=> true
 
 ### 3.2.1 ::new
 
-`ConnectN::Demo.new -> Demo`
+`ConnectN::Demo.new -> ConnectN::Demo`
 
 ### 3.2.2 #launch
 
@@ -298,9 +298,9 @@ ConnectN::Game.select_game_name('not_empty.yaml') #=> works as intended
 
 ### 3.3.3 ::load
 
-`ConnectN::Game.load(name, yaml_fn) -> Game or nil`
+`ConnectN::Game.load(name, yaml_fn) -> ConnectN::Game or nil`
 
-Returns the `Game` instance named `name` in `yaml_fn`.
+Returns the `ConnectN::Game` instance named `name` in `yaml_fn`.
 
 Returns nil if no such game exists.
 
@@ -315,13 +315,13 @@ ConnectN::Game.load(:test, 'my_games.yaml')
 
 ### 3.3.4 ::new
 
-`ConnectN::Game.new(board:, first_player:, second_player:, min_to_win:) -> Game`
+`ConnectN::Game.new(board:, first_player:, second_player:, min_to_win:) -> ConnectN::Game`
 
 Returns a `Game` instance.
 
 **_Notes_** :
 
-- `board` must be a `Board` instance.
+- `board` must be a `ConnectN::Board` instance.
 
 - `first_player` & `second_player` can be instances of `Player`, `HumanPlayer`, or `ComputerPlayer`.
 
@@ -329,7 +329,7 @@ Returns a `Game` instance.
 
 ### 3.3.5 ::resume
 
-`ConnectN::resume(game) -> nil`
+`ConnectN::Game.resume(game) -> nil`
 
 Resumes the given `game` and returns `nil`.
 
@@ -412,3 +412,128 @@ Returns `false` otherwise.
 `game.welcome -> nil`
 
 Outputs, to stdout, a friendly message that explains the game to the user.
+
+## 3.4 Player
+
+### 3.4.1 ::new
+
+`ConnectN::Player.new(name:, disc:) -> ConnectN::Player`
+
+Creates a `Player` instance with the name `name` and disc `disc`.
+
+**_Notes_** :
+
+- `name` can be any object, a `Symbol` or `String` makes more sense, though.
+
+- `disc` can be any object, a `Symbol` or `String` makes more sense, though.
+
+- Both `names` & `disc` can be reassigned after creation.
+
+## 3.5 HumanPlayer
+
+### 3.5.1 ::new
+
+`ConnectN::HumanPlayer.new(name: 'Human', disc: '🔥', save_key: ':w') -> ConnectN::HumanPlayer`
+
+**_Notes_** :
+
+- To understand the use of `save_key`, see [next section](#352-pick).
+
+- `HumanPlayer` inherits from `ConnectN::Player`.
+
+- The only difference between `Player::new` and `HumanPlayer::new` are the default values.
+
+### 3.5.2 #pick
+
+`human_player.pick -> Object`
+
+Prompts the user to enter a pick, i.e a column number.
+
+If the value of `human_player.save_key` is entered by the user, it is recognized as the user wanting to save the game. For example, it is used in `Game#play`.
+
+Returns the value of `human_player.save_key` if the user wants to save the game.
+
+Returns the `Integer` entered by the user, minus one.
+
+```ruby
+human_player = ConnectN::HumanPlayer.new
+# User enters ':w'
+human_player.pick #=> :w
+
+# User enters '5'
+human_player.pick #=> 4
+
+# User enters 'random string'
+human_player.pick #=> -1
+
+```
+
+## 3.6 ComputerPlayer
+
+### 3.6.1 ::new
+
+```ruby
+ConnectN::ComputerPlayer.new(
+  name: 'Computer',
+  disc: '🧊',
+  min_to_win: 4,
+  difficulty: 0,
+  delay: 0,
+  board:,
+  opponent_disc:
+) -> ConnectN::ComputerPlayer
+```
+
+- `min_to_win` : Must be the same `min_to_win` of the `ConnectN::Game` instance.
+
+- `difficulty` : an `Integer` greater than or equal to 0. The higher it is, the harder it is to beat the computer.
+
+- `delay` : a/an `Float`/`Integer` of how many seconds the `ConnectN::ComputerPlayer` instance should take to play its pick.
+
+- `board` : Must be the same `ConnectN::Board` instance given to the `ConnectN::Game` instance.
+
+- `opponent_disc` : Must be the `disc` of the opponent player.
+
+```ruby
+
+board = ConnectN::Board.new
+
+player_1 = ConnectN::ComputerPlayer.new(
+  difficulty: 4,
+  delay: 2,
+  board: board,
+  opponent_disc: '🔥'
+)
+player_2 = ConnectN::ComputerPlayer.new(
+  difficulty: 4,
+  delay: 2,
+  board: board,
+  opponent_disc: player_1.disc
+)
+
+game = ConnectN::Game.new(
+  board: board,
+  first_player: player_1,
+  second_player: player_2,
+)
+
+game.play
+```
+
+### 3.6.2 #pick
+
+`computer_player.pick -> Integer`
+
+Returns a valid column number, i.e in the range `0..cols_amount-1`.
+
+See [this](2-computerplayers-mechanism) for more info on how it works.
+
+## 3.7 Winnable
+
+### #win?
+
+`win?(board, row_num, col_num, disc) -> true or false`
+
+Returns true if `disc` getting dropped at the cell `(row_num, col_num)` of `board` makes a win.
+
+Returns false otherwise.
