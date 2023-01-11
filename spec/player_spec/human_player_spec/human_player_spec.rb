@@ -6,14 +6,14 @@ describe ConnectN::HumanPlayer do
 
   describe '#pick' do
     context 'when the user wants to save the game' do
-      let(:user_input) { ':W' }
+      let(:user_input) { human_player.save_key }
       before do
         allow(ConnectN::PROMPT).to receive(:ask).and_return(user_input)
       end
 
-      it 'returns :W downcased' do
+      it 'returns save_key' do
         pick = human_player.pick
-        expect(pick).to eq(user_input.downcase)
+        expect(pick).to eq(user_input)
       end
     end
 

@@ -6,11 +6,16 @@ require_relative '../player'
 
 module ConnectN
   class HumanPlayer < Player
-    def initialize(name: 'Human', disc: '🔥') = super
+    attr_accessor :save_key
+
+    def initialize(name: 'Human', disc: '🔥', save_key: ':w') 
+      @save_key = save_key
+      super name: name, disc: disc
+    end
 
     def pick
-      input = PROMPT.ask('Please enter a column number : ')&.downcase
-      input == ':w' ? input : input.to_i - 1
+      input = PROMPT.ask('Please enter a column number : ')
+      input == save_key ? input : input.to_i - 1
     end
   end
 end
