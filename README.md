@@ -274,6 +274,8 @@ board.valid_pick?(3) #=> true
 
 - `Demo`'s purpose is to show all features of the gem and to give you an idea on how you could use it to build your own custom connect_n game.
 
+- You need to create a yaml file called `connect_n_saved_games.yaml` in the directory where you run `Demo#launch`.
+
 ## 4.2.1 ::new
 
 ```ruby
