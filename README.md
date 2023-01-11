@@ -23,47 +23,48 @@ gem install connect_n
 # Contents
 
 - [1. What I learnt](#1-what-i-learnt)
-- [2. ComputerPlayer's mechanism](#2-computerplayers-mechanism)
-- [3. Documentation](#3-documentation)
-  - [3.1 Board](#31-board)
-    - [3.1.1 ::new](#317-new)
-    - [3.1.2 #cell_at](#311cell_at)
-    - [3.1.3 #col_at](#312col_at)
-    - [3.1.4 #cols](#313-cols)
-    - [3.1.5 #draw](#314-draw)
-    - [3.1.6 #drop_disc](#315-drop_disc)
-    - [3.1.7 #filled?](#316-filled?)
-    - [3.1.8 #row](#318-row)
-    - [3.1.9 #rows](#319-rows)
-    - [3.1.10 #valid_pick?](#3110valid_pick?)
-  - [3.2 Demo](#32-demo)
-    - [3.2.1 ::new](#321-new)
-    - [3.2.2 #launch](#321-launch)
-  - [3.3 Game](#33-game)
-    - [3.3.1 ::games](#331-games)
-    - [3.3.2 ::select_game_name](#332-select_game_name)
-    - [3.3.3 ::load](#333-load)
-    - [3.3.4 ::new](#334-new)
-    - [3.3.5 ::resume](#335-resume)
-    - [3.3.6 ::resume?](#336-resume?)
-    - [3.3.7 ::save](#337-save)
-    - [3.3.8 ::save?](#338-save?)
-    - [3.3.9 #invalid_pick](#339-invalid_pick)
-    - [3.3.10 #play](#3310-play)
-    - [3.3.11 #play_again?](#3311-play_again?)
-    - [3.3.12 #over](#3312-over)
-    - [3.3.13 #over?](#3313-over?)
-    - [3.3.14 #welcome](#3314-welcome)
-  - [3.4 Player](#34-player)
-    - [3.4.1 ::new](#341-initialize)
-  - [3.5 HumanPlayer](#35-humanplayer)
-    - [3.5.1 ::new](#351-initialize-3)
-    - [3.5.2 #pick](#352-pick)
-  - [3.6 ComputerPlayer](#36-computerplayer)
-    - [3.6.1 ::new](#361-initialize)
-    - [3.6.2 #pick](#362-pick)
-  - [3.7 Winnable](#37-winnable)
-    - [3.7.1 #win?](#371-win?)
+- [2. Contributing](#2-contributing)
+- [3. ComputerPlayer's mechanism](#3-computerplayers-mechanism)
+- [4. Documentation](#4-documentation)
+  - [4.1 Board](#41-board)
+    - [4.1.1 ::new](#417-new)
+    - [4.1.2 #cell_at](#411cell_at)
+    - [4.1.3 #col_at](#412col_at)
+    - [4.1.4 #cols](#413-cols)
+    - [4.1.5 #draw](#414-draw)
+    - [4.1.6 #drop_disc](#415-drop_disc)
+    - [4.1.7 #filled?](#416-filled?)
+    - [4.1.8 #row](#418-row)
+    - [4.1.9 #rows](#419-rows)
+    - [4.1.10 #valid_pick?](#4110valid_pick?)
+  - [4.2 Demo](#42-demo)
+    - [4.2.1 ::new](#421-new)
+    - [4.2.2 #launch](#421-launch)
+  - [4.3 Game](#43-game)
+    - [4.3.1 ::games](#431-games)
+    - [4.3.2 ::select_game_name](#432-select_game_name)
+    - [4.3.3 ::load](#433-load)
+    - [4.3.4 ::new](#434-new)
+    - [4.3.5 ::resume](#435-resume)
+    - [4.3.6 ::resume?](#436-resume?)
+    - [4.3.7 ::save](#437-save)
+    - [4.3.8 ::save?](#438-save?)
+    - [4.3.9 #invalid_pick](#439-invalid_pick)
+    - [4.3.10 #play](#4310-play)
+    - [4.3.11 #play_again?](#4311-play_again?)
+    - [4.3.12 #over](#4312-over)
+    - [4.3.13 #over?](#4313-over?)
+    - [4.3.14 #welcome](#4314-welcome)
+  - [4.4 Player](#44-player)
+    - [4.4.1 ::new](#441-initialize)
+  - [4.5 HumanPlayer](#45-humanplayer)
+    - [4.5.1 ::new](#451-initialize-3)
+    - [4.5.2 #pick](#452-pick)
+  - [4.6 ComputerPlayer](#46-computerplayer)
+    - [4.6.1 ::new](#461-initialize)
+    - [4.6.2 #pick](#462-pick)
+  - [4.7 Winnable](#47-winnable)
+    - [4.7.1 #win?](#471-win?)
 
 ## 1. What I learnt
 
@@ -71,17 +72,25 @@ gem install connect_n
 
 - How starting a project by writing tests first helps organize the project.
 
-## 2. ComputerPlayer's mechanism
+## 2. Contributing
+
+Contributions of any kind are more than welcome!
+
+Feel free to open a github issue or open a pull request if you come across any typos or bugs, or if you find some parts of the API confusing :D!
+
+## 3. ComputerPlayer's mechanism
 
 It is made of a combination of minimax algorithm, alpha-beta pruning, and the heuristic function that is explained here : https://identity.pub/2019/10/16/minimax-connect4.html
 
-## 3. Documentation
+## 4. Documentation
 
-### 3.1 Board
+### 4.1 Board
 
-### 3.1.1 ::new
+### 4.1.1 ::new
 
-`ConnectN::Board.new(rows_amount: 6, cols_amount: 7, empty_disc: '⚪' -> ConnectN::Board`
+```ruby
+ConnectN::Board.new(rows_amount: 6, cols_amount: 7, empty_disc: '⚪' -> ConnectN::Board
+```
 
 Returns a `Board` instance with the dimensions `rows_amount x cols_amount`, with each cell containing the value of `empty_disc`.
 
@@ -96,9 +105,11 @@ default_board = ConnectN::Board.new #=> 6x7 board
 board = ConnectN::Board.new rows_amount: 9, cols_amount: 9 #=> 9x9 board
 ```
 
-#### 3.1.2 #cell_at
+#### 4.1.2 #cell_at
 
-`board.cell_at(row_num, col_num) -> object or nil`
+```ruby
+board.cell_at(row_num, col_num) -> object or nil
+```
 
 Returns the board cell at coordinates (row_num, col_num).
 
@@ -113,9 +124,11 @@ board = ConnectN::Board.new
 bottom_left_corner_cell = board.cell_at(0, 0) #=> '⚪'
 ```
 
-#### 3.1.3 #col_at
+#### 4.1.3 #col_at
 
-`board.col_at(n) -> Array or nil`
+```ruby
+board.col_at(n) -> Array or nil
+```
 
 Returns the board's `nth` column.
 
@@ -132,9 +145,11 @@ board = ConnectN::Board.new
 far_left_col = board.col_at(0) #=> ['⚪', '⚪', '⚪', '⚪', '⚪', '⚪']
 ```
 
-### 3.1.4 #cols
+### 4.1.4 #cols
 
-`board.cols -> 2D Array`
+```ruby
+board.cols -> 2D Array
+```
 
 Returns the board's columns.
 
@@ -149,9 +164,11 @@ board = ConnectN::Board.new
 cols = board.cols
 ```
 
-### 3.1.5 #draw
+### 4.1.5 #draw
 
-`board.draw -> nil`
+```ruby
+board.draw -> nil
+```
 
 Outputs the board in a table-format to stdout and returns `nil`.
 
@@ -160,9 +177,11 @@ board = ConnectN::Board.new
 board.draw
 ```
 
-### 3.1.6 #drop_disc
+### 4.1.6 #drop_disc
 
-`board.drop_disc(disc, at_col:) -> Array`
+```ruby
+board.drop_disc(disc, at_col:) -> Array
+```
 
 Modifies `self` by dropping `disc` at the board's column number `at_col`.
 
@@ -183,9 +202,11 @@ board = ConnectN::Board.new
 board.drop_disc('🔥', at_col: 0) #=> [0, 0, '🔥']
 ```
 
-### 3.1.7 #filled?
+### 4.1.7 #filled?
 
-`board.filled? -> true or false`
+```ruby
+board.filled? -> true or false
+```
 
 Returns true if the board is filled, returns false otherwise.
 
@@ -194,9 +215,11 @@ board = ConnectN::Board.new
 board.filled? #=> false
 ```
 
-#### 3.1.8 #row_at
+#### 4.1.8 #row_at
 
-`board.row_at(n) -> Array or nil`
+```ruby
+board.row_at(n) -> Array or nil
+```
 
 Returns the board's `nth` row.
 
@@ -213,9 +236,11 @@ board = ConnectN::Board.new
 bottom_row = board.row_at(0) #=> ['⚪', '⚪', '⚪', '⚪', '⚪', '⚪', '⚪']
 ```
 
-### 3.1.9 #rows
+### 4.1.9 #rows
 
-`board.rows -> 2D Array`
+```ruby
+board.rows -> 2D Array
+```
 
 Returns the board's rows, `self` is not modified.
 
@@ -230,9 +255,11 @@ board = ConnectN::Board.new
 rows = board.rows
 ```
 
-### 3.1.10 #valid_pick?
+### 4.1.10 #valid_pick?
 
-`board.valid_pick?(pick) -> true or false`
+```ruby
+board.valid_pick?(pick) -> true or false
+```
 
 Returns `true` if `pick` is a valid column number, i.e the column is not filled nor outside of the range `0..cols_amount-1`. `self` is not modified.
 
@@ -241,19 +268,23 @@ board = ConnectN::Board.new
 board.valid_pick?(3) #=> true
 ```
 
-## 3.2 Demo
+## 4.2 Demo
 
 **_Notes_** :
 
 - `Demo`'s purpose is to show all features of the gem and to give you an idea on how you could use it to build your own custom connect_n game.
 
-### 3.2.1 ::new
+### 4.2.1 ::new
 
-`ConnectN::Demo.new -> ConnectN::Demo`
+```ruby
+ConnectN::Demo.new -> ConnectN::Demo
+```
 
-### 3.2.2 #launch
+### 4.2.2 #launch
 
-`demo.launch -> nil`
+```ruby
+demo.launch -> nil
+```
 
 Returns nil.
 
@@ -264,11 +295,13 @@ demo = ConnectN::Demo.new
 demo.launch
 ```
 
-## 3.3 Game
+## 4.3 Game
 
-### 3.3.1 ::games
+### 4.3.1 ::games
 
-`ConnectN::Game.games(yaml_fn) -> Hash`
+```ruby
+ConnectN::Game.games(yaml_fn) -> Hash
+```
 
 Returns a deserialized hash from the given `yaml_fn` whose keys are symbols representing the names of the saved games, while values are the corresponding game instances.
 
@@ -281,9 +314,11 @@ ConnectN::Game.games('empty.yaml') #=> {}
 ConnectN::Game.games('not_empty.yaml') #=> { test: game_obj }
 ```
 
-### 3.3.2 ::select_game_name
+### 4.3.2 ::select_game_name
 
-`ConnectN::Game.select_game_name(yaml_fn) -> Symbol`
+```ruby
+ConnectN::Game.select_game_name(yaml_fn) -> Symbol
+```
 
 Lists the games saved in `yaml_fn` for the user to select one & returns the selected game name as a symbol.
 
@@ -296,9 +331,11 @@ ConnectN::Game.select_game_name('empty.yaml') # Exception is raised
 ConnectN::Game.select_game_name('not_empty.yaml') #=> works as intended
 ```
 
-### 3.3.3 ::load
+### 4.3.3 ::load
 
-`ConnectN::Game.load(name, yaml_fn) -> ConnectN::Game or nil`
+```ruby
+ConnectN::Game.load(name, yaml_fn) -> ConnectN::Game or nil
+```
 
 Returns the `ConnectN::Game` instance named `name` in `yaml_fn`.
 
@@ -313,9 +350,11 @@ ConnectN::Game.load('test', 'my_games.yaml')
 ConnectN::Game.load(:test, 'my_games.yaml')
 ```
 
-### 3.3.4 ::new
+### 4.3.4 ::new
 
-`ConnectN::Game.new(board:, first_player:, second_player:, min_to_win:) -> ConnectN::Game`
+```ruby
+ConnectN::Game.new(board:, first_player:, second_player:, min_to_win:) -> ConnectN::Game
+```
 
 Returns a `Game` instance.
 
@@ -327,43 +366,55 @@ Returns a `Game` instance.
 
 - `min_to_win` is the minimum number of connected similar discs to count as a win. Must be a positive `Integer`.
 
-### 3.3.5 ::resume
+### 4.3.5 ::resume
 
-`ConnectN::Game.resume(game) -> nil`
+```ruby
+ConnectN::Game.resume(game) -> nil
+```
 
 Resumes the given `game` and returns `nil`.
 
-### 3.3.6 ::resume?
+### 4.3.6 ::resume?
 
-`ConnectN::Game.resume? -> true or false`
+```ruby
+ConnectN::Game.resume? -> true or false
+```
 
 Returns `true` if the user wants to resume a saved game.
 
 Returns `false` otherwise.
 
-### 3.3.7 ::save
+### 4.3.7 ::save
 
-`ConnectN::Game.save(game, name, yaml_fn) -> Integer`
+```ruby
+ConnectN::Game.save(game, name, yaml_fn) -> Integer
+```
 
 Serializes the given `game` as a `Hash` of key `name` & value `game` to the given `yaml_fn`.
 
-### 3.3.8 ::save?
+### 4.3.8 ::save?
 
-`ConnectN::Game.save? -> true or false`
+```ruby
+ConnectN::Game.save? -> true or false
+```
 
 Returns `true` if the user wants to save the game.
 
 Returns `false` otherwise.
 
-### 3.3.9 #invalid_pick
+### 4.3.9 #invalid_pick
 
-`game.invalid_pick -> nil`
+```ruby
+game.invalid_pick -> nil
+```
 
 Outputs the error message 'Invalid Column Number' on a red box to stdout.
 
-### 3.3.10 #play
+### 4.3.10 #play
 
-`game.play(yaml_fn = nil) -> nil`
+```ruby
+game.play(yaml_fn = nil) -> nil
+```
 
 Starts the game.
 
@@ -383,41 +434,51 @@ game = ConnectN::Game.new(
 game.play('my_games.yaml')
 ```
 
-### 3.3.11 #play_again?
+### 4.3.11 #play_again?
 
-`game.play_again? -> true or false`
+```ruby
+game.play_again? -> true or false
+```
 
 Returns `true` if the user wants to play the game again.
 
 Returns `false` otherwise.
 
-### 3.3.12 #over
+### 4.3.12 #over
 
-`game.over(winner) -> nil`
+```ruby
+game.over(winner) -> nil
+```
 
 Outputs the winner's name on a green box to stdout.
 
 If there is no winner, it similarly announces a tie.
 
-### 3.3.13 #over?
+### 4.3.13 #over?
 
-`game.over? -> true or false`
+```ruby
+game.over? -> true or false
+```
 
 Returns `true` if a player has won or if it is a draw.
 
 Returns `false` otherwise.
 
-### 3.3.14 #welcome
+### 4.3.14 #welcome
 
-`game.welcome -> nil`
+```ruby
+game.welcome -> nil
+```
 
 Outputs, to stdout, a friendly message that explains the game to the user.
 
-## 3.4 Player
+## 4.4 Player
 
-### 3.4.1 ::new
+### 4.4.1 ::new
 
-`ConnectN::Player.new(name:, disc:) -> ConnectN::Player`
+```ruby
+ConnectN::Player.new(name:, disc:) -> ConnectN::Player
+```
 
 Creates a `Player` instance with the name `name` and disc `disc`.
 
@@ -429,11 +490,13 @@ Creates a `Player` instance with the name `name` and disc `disc`.
 
 - Both `names` & `disc` can be reassigned after creation.
 
-## 3.5 HumanPlayer
+## 4.5 HumanPlayer
 
-### 3.5.1 ::new
+### 4.5.1 ::new
 
-`ConnectN::HumanPlayer.new(name: 'Human', disc: '🔥', save_key: ':w') -> ConnectN::HumanPlayer`
+```ruby
+ConnectN::HumanPlayer.new(name: 'Human', disc: '🔥', save_key: ':w') -> ConnectN::HumanPlayer
+```
 
 **_Notes_** :
 
@@ -443,9 +506,11 @@ Creates a `Player` instance with the name `name` and disc `disc`.
 
 - The only difference between `Player::new` and `HumanPlayer::new` are the default values.
 
-### 3.5.2 #pick
+### 4.5.2 #pick
 
-`human_player.pick -> Object`
+```ruby
+human_player.pick -> Object
+```
 
 Prompts the user to enter a pick, i.e a column number.
 
@@ -468,9 +533,9 @@ human_player.pick #=> -1
 
 ```
 
-## 3.6 ComputerPlayer
+## 4.6 ComputerPlayer
 
-### 3.6.1 ::new
+### 4.6.1 ::new
 
 ```ruby
 ConnectN::ComputerPlayer.new(
@@ -520,7 +585,7 @@ game = ConnectN::Game.new(
 game.play
 ```
 
-### 3.6.2 #pick
+### 4.6.2 #pick
 
 `computer_player.pick -> Integer`
 
@@ -528,7 +593,7 @@ Returns a valid column number, i.e in the range `0..cols_amount-1`.
 
 See [this](2-computerplayers-mechanism) for more info on how it works.
 
-## 3.7 Winnable
+## 4.7 Winnable
 
 ### #win?
 
