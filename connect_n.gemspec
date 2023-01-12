@@ -24,5 +24,5 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
   s.add_runtime_dependency 'tty-box', '~> 0.7.0'
   s.add_runtime_dependency 'tty-prompt', '~> 0.23.1'
-  s.required_ruby_version = '>= 3.0.0'
+  s.required_ruby_version = '>= 2.7.0'
 end
