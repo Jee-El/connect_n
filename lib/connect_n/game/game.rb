@@ -118,7 +118,7 @@ module ConnectN
 
     def over(winner)
       phrase = board.filled? ? 'It is a tie!' : "#{winner.name} has won!"
-      puts TTY::Box.sucess(phrase)
+      puts TTY::Box.success(phrase)
     end
 
     private
