@@ -7,6 +7,7 @@ require_relative '../player/human_player/human_player'
 require_relative '../player/computer_player/computer_player'
 require_relative '../board/board'
 require_relative '../winnable/winnable'
+require_relative '../prompt/prompt'
 
 module ConnectN
   class Game
@@ -14,7 +15,7 @@ module ConnectN
 
     attr_reader :board, :players, :min_to_win
 
-    PERMITTED_CLASSES = [Symbol, Game, Board, HumanPlayer, ComputerPlayer].freeze
+    PERMITTED_CLASSES = [Symbol, Game, Board, HumanPlayer, ComputerPlayer]
 
     def initialize(
       board:,
@@ -54,7 +55,7 @@ module ConnectN
     end
 
     def play_again?
-      PROMPT.yes? 'Would you like to play again?'
+      Prompt::PROMPT.yes? 'Would you like to play again?'
     end
 
     def self.save?(input)
@@ -62,7 +63,7 @@ module ConnectN
     end
 
     def self.resume?
-      PROMPT.yes? 'Do you want to resume a game?'
+      Prompt::PROMPT.yes? 'Do you want to resume a game?'
     end
 
     def self.resume(game)
@@ -89,12 +90,12 @@ module ConnectN
     end
 
     def self.name_game
-      PROMPT.ask 'Name your game : '
+      Prompt::PROMPT.ask 'Name your game : '
     end
 
     def self.select_game_name(yaml_fn)
       games = games(yaml_fn).keys.map.with_index(1) { "#{_2} -> #{_1}" }
-      PROMPT.select 'Choose a saved game : ', games, convert: :sym
+      Prompt::PROMPT.select 'Choose a saved game : ', games, convert: :sym
     end
 
     def welcome
@@ -113,7 +114,7 @@ module ConnectN
     end
 
     def invalid_pick
-      PROMPT.error 'Invalid Column Number'
+      Prompt::PROMPT.error 'Invalid Column Number'
     end
 
     def over(winner)
