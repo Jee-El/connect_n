@@ -65,13 +65,14 @@ gem install connect_n
     - [4.6.2 #pick](#462-pick)
   - [4.7 Prompt](#47-prompt)
     - [4.7.1 ::ask_for_cols_amount](#471-ask_for_cols_amount)
-    - [4.7.2 ::ask_for_difficulty](#474-ask_for_difficuly)
-    - [4.7.3 ::ask_for_disc](#477-ask_for_disc)
-    - [4.7.4 ::ask_for_min_to_win](#473-ask_for_min_to_win)
+    - [4.7.2 ::ask_for_difficulty](#472-ask_for_difficuly)
+    - [4.7.3 ::ask_for_disc](#473-ask_for_disc)
+    - [4.7.4 ::ask_for_min_to_win](#474-ask_for_min_to_win)
     - [4.7.5 ::ask_for_mode](#475-ask_for_mode)
-    - [4.7.6 ::starts?](#476-human_starts?)
-    - [4.7.7 ::ask_for_name](#478-ask_for_name)
-    - [4.7.8 ::ask_for_rows_amount][#472-ask_for_rows_amount]
+    - [4.7.6 ::ask_for_name](#476-ask_for_name)
+    - [4.7.7 ::ask_for_pick](#477-ask_for_pick)
+    - [4.7.8 ::ask_for_rows_amount][#478-ask_for_rows_amount]
+    - [4.7.9 ::starts?](#479-human_starts?)
   - [4.8 Winnable](#47-winnable)
     - [4.8.1 #win?](#471-win?)
 
@@ -689,17 +690,7 @@ Prompts the user with a prompt consisting of the value of `prompt`, followed by 
 
 - Multiplayer
 
-## 4.7.6 ::starts?
-
-```ruby
-ConnectN::Prompt.starts?(prompt: 'Do you wanna play first?') -> true or false
-```
-
-Prompts the user with a yes/no prompt consisting of the value of `prompt`.
-
-`true` is the default value returned if the user presses enter without entering anything.
-
-## 4.7.7 ask_for_name
+## 4.7.6 ::ask_for_name
 
 ```ruby
 ConnectN::Prompt.ask_for_name(prompt: 'Enter your name : ', default: ENV['USER']) -> String
@@ -708,6 +699,14 @@ ConnectN::Prompt.ask_for_name(prompt: 'Enter your name : ', default: ENV['USER']
 Prompts the user with a prompt consisting of the value of `prompt`.
 
 `default`'s value is returned if the user presses enter without entering anything.
+
+## 4.7.7 ::ask_for_pick
+
+```ruby
+ConnectN::Prompt.ask_for_pick(prompt: 'Please enter a column number : ') -> String
+```
+
+Prompts the user with a prompt consisting of the value of `prompt`.
 
 ## 4.7.8 ::ask_for_rows_amount
 
@@ -719,6 +718,16 @@ ConnectN::Prompt.ask_for_rows_amount(
 ```
 
 Same as `ConnectN::Prompt.ask_for_cols_amount` but with different default values.
+
+## 4.7.9 ::starts?
+
+```ruby
+ConnectN::Prompt.starts?(prompt: 'Do you wanna play first?') -> true or false
+```
+
+Prompts the user with a yes/no prompt consisting of the value of `prompt`.
+
+`true` is the default value returned if the user presses enter without entering anything.
 
 # 4.8 Winnable
 
