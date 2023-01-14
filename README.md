@@ -63,8 +63,17 @@ gem install connect_n
   - [4.6 ComputerPlayer](#46-computerplayer)
     - [4.6.1 ::new](#461-initialize)
     - [4.6.2 #pick](#462-pick)
-  - [4.7 Winnable](#47-winnable)
-    - [4.7.1 #win?](#471-win?)
+  - [4.7 Prompt](#47-prompt)
+    - [4.7.1 ::ask_for_cols_amount](#471-ask_for_cols_amount)
+    - [4.7.2 ::ask_for_difficulty](#474-ask_for_difficuly)
+    - [4.7.3 ::ask_for_disc](#477-ask_for_disc)
+    - [4.7.4 ::ask_for_min_to_win](#473-ask_for_min_to_win)
+    - [4.7.5 ::ask_for_mode](#475-ask_for_mode)
+    - [4.7.6 ::starts?](#476-human_starts?)
+    - [4.7.7 ::ask_for_name](#478-ask_for_name)
+    - [4.7.8 ::ask_for_rows_amount][#472-ask_for_rows_amount]
+  - [4.8 Winnable](#47-winnable)
+    - [4.8.1 #win?](#471-win?)
 
 # 1. What I learnt
 
@@ -74,9 +83,9 @@ gem install connect_n
 
 # 2. Contributing
 
-Contributions of any kind are more than welcome!
+**Contributions of any kind are more than welcome!**
 
-Feel free to open a github issue or open a pull request if you come across any typos or bugs, or if you find some parts of the API confusing :D!
+Feel free to open a github issue or a pull request if you come across any typos or bugs, or if you find some parts of the API confusing, or if you would like to suggest a new feature :D!
 
 # 3. ComputerPlayer's mechanism
 
@@ -285,16 +294,18 @@ ConnectN::Demo.new -> ConnectN::Demo
 ## 4.2.2 #launch
 
 ```ruby
-demo.launch -> nil
+demo.launch(yaml_fn) -> nil
 ```
-
-Returns nil.
 
 Runs a game demo.
 
+**_Notes_** :
+
+- `yaml_fn` must exist and be a yaml file.
+
 ```ruby
 demo = ConnectN::Demo.new
-demo.launch
+demo.launch('saved_games.yaml)
 ```
 
 # 4.3 Game
@@ -358,8 +369,6 @@ ConnectN::Game.load(:test, 'my_games.yaml')
 ConnectN::Game.new(board:, first_player:, second_player:, min_to_win:) -> ConnectN::Game
 ```
 
-Returns a `Game` instance.
-
 **_Notes_** :
 
 - `board` must be a `ConnectN::Board` instance.
@@ -367,6 +376,19 @@ Returns a `Game` instance.
 - `first_player` & `second_player` can be instances of `Player`, `HumanPlayer`, or `ComputerPlayer`.
 
 - `min_to_win` is the minimum number of connected similar discs to count as a win. Must be a positive `Integer`.
+
+```ruby
+board = ConnectN::Board.new
+
+player_1 = ConnectN::HumanPlayer.new(disc: 'A')
+player_2 = ConnectN::HumanPlayer.new(disc: 'B')
+
+game = ConnectN::Game.new(
+  board: board,
+  first_player: player_1,
+  second_player: player_2,
+)
+```
 
 ## 4.3.5 ::resume
 
@@ -393,6 +415,12 @@ ConnectN::Game.save(game, name, yaml_fn) -> Integer
 ```
 
 Serializes the given `game` as a `Hash` of key `name` & value `game` to the given `yaml_fn`.
+
+**_Notes_** :
+
+- `game` : `ConnectN::Game` instance.
+
+- `name` : `String` or `Symbol`
 
 ## 4.3.8 ::save?
 
@@ -595,9 +623,106 @@ Returns a valid column number, i.e in the range `0..cols_amount-1`.
 
 See [this](2-computerplayers-mechanism) for more info on how it works.
 
-# 4.7 Winnable
+# 4.7 Prompt
 
-## #win?
+## 4.7.1 ::ask_for_cols_amount
+
+```ruby
+ConnectN::Prompt.ask_for_cols_amount(
+  prompt: 'How many columns do you want in the board?',
+  default: 7
+) -> Integer
+```
+
+Prompts the user, with a prompt consisting of the value of `prompt`, to enter the amount of columns to be in the board.
+
+`default`'s value is returned if the user does not enter any input and presses the enter key.
+
+## 4.7.2 ::ask_for_difficulty
+
+```ruby
+ConnectN::Prompt.ask_for_difficulty(prompt: 'Difficulty : ', levels: [*0..10], default: 5) -> Integer
+```
+
+Prompts the user, with a prompt consisting of the value of `prompt`, followed by a slider that the user can slide to choose a difficulty level of the levels in `levels`.
+
+`default` is the initial value of the slider.
+
+## 4.7.3 ::ask_for_disc
+
+```ruby
+ConnectN::Prompt.ask_for_disc(
+  prompt: 'Enter a character that will represent your disc : ',
+  default: '🔥',
+  error_msg: 'Please enter a single character.'
+) -> String
+```
+
+Prompts the user, with a prompt consisting of the value of `prompt`, to enter the character that will represent their disc.
+
+`default`'s value is returned if the user does not enter any input and presses the enter key.
+
+`error_msg` is the error message displayed in case the user does not enter a single character.
+
+## 4.7.4 ::ask_for_min_to_win
+
+```ruby
+ConnectN::Prompt.ask_for_min_to_win(
+  prompt: 'Minimum number of aligned similar discs necessary to win : ',
+  default: 4
+) -> Integer
+```
+
+Prompts the user, with a prompt consisting of the value of `prompt`, to enter the minimum amount of aligned discs that will count as a win.
+
+`default`'s value is returned if the user does not enter any input and presses the enter key.
+
+## 4.7.5 ::ask_for_mode
+
+```ruby
+ConnectN::Prompt.ask_for_mode(prompt: 'Choose a game mode : ')
+```
+
+Prompts the user with a prompt consisting of the value of `prompt`, followed by a select menu that has two options :
+
+- Single Player
+
+- Multiplayer
+
+## 4.7.6 ::starts?
+
+```ruby
+ConnectN::Prompt.starts?(prompt: 'Do you wanna play first?') -> true or false
+```
+
+Prompts the user with a yes/no prompt consisting of the value of `prompt`.
+
+`true` is the default value returned if the user presses enter without entering anything.
+
+## 4.7.7 ask_for_name
+
+```ruby
+ConnectN::Prompt.ask_for_name(prompt: 'Enter your name : ', default: ENV['USER']) -> String
+```
+
+Prompts the user with a prompt consisting of the value of `prompt`.
+
+`default`'s value is returned if the user presses enter without entering anything.
+
+## 4.7.8 ::ask_for_rows_amount
+
+```ruby
+ConnectN::Prompt.ask_for_rows_amount(
+  prompt: 'How many rows do you want in the board?',
+  default: 6
+) -> Integer
+```
+
+Same as `ConnectN::Prompt.ask_for_cols_amount` but with different default values.
+
+# 4.8 Winnable
+
+## 4.8.1 #win?
 
 `win?(board, row_num, col_num, disc) -> true or false`
 
