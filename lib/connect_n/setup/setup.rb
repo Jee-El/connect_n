@@ -1,8 +1,7 @@
-
+# frozen_string_literal: true
 
 module ConnectN
   module Setup
-
     def self.ask_for_cols_amount(
       prompt: 'How many columns do you want in the board?',
       default: 7
@@ -12,7 +11,7 @@ module ConnectN
 
     def self.ask_for_rows_amount(
       prompt: 'How many rows do you want in the board?',
-      default: 6 
+      default: 6
     )
       PROMPT.ask prompt, convert: :int, default: default
     end

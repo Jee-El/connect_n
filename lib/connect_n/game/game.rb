@@ -14,7 +14,7 @@ module ConnectN
 
     attr_reader :board, :players, :min_to_win
 
-    PERMITTED_CLASSES = [Symbol, Game, Board, HumanPlayer, ComputerPlayer]
+    PERMITTED_CLASSES = [Symbol, Game, Board, HumanPlayer, ComputerPlayer].freeze
 
     def initialize(
       board:,

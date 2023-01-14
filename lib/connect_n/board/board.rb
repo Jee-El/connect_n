@@ -35,7 +35,7 @@ module ConnectN
     end
 
     def draw
-      table.each{ |row| draw_border || draw_row(row) }
+      table.each { |row| draw_border || draw_row(row) }
       draw_border
       draw_col_nums
     end
@@ -74,7 +74,7 @@ module ConnectN
     end
 
     def draw_row(row)
-      puts '| ' + row.join(' | ') + ' |'
+      puts "| #{row.join(' | ')} |"
     end
 
     def draw_col_nums
@@ -94,7 +94,7 @@ module ConnectN
     def valid_row?(n)
       n.between?(0, rows_amount - 1)
     end
-      
+
     def valid_col?(n)
       n.between?(0, cols_amount - 1)
     end
