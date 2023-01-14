@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-require 'tty-prompt'
-
 require_relative '../player'
+require_relative '../../prompt/prompt'
 
 module ConnectN
   class HumanPlayer < Player
@@ -14,7 +13,7 @@ module ConnectN
     end
 
     def pick
-      input = PROMPT.ask('Please enter a column number : ')
+      input = Prompt.ask_for_pick
       input == save_key ? input : input.to_i - 1
     end
   end

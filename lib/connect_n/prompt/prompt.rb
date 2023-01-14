@@ -53,5 +53,9 @@ module ConnectN
     def self.ask_for_name(prompt: 'Enter your name : ', default: ENV['USER'])
       PROMPT.ask prompt, default: default
     end
+
+    def self.ask_for_pick(prompt: 'Please enter a column number : ')
+      PROMPT.ask prompt
+    end
   end
 end

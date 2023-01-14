@@ -7,11 +7,12 @@ describe ConnectN::HumanPlayer do
   subject(:human_player) { described_class.new }
 
   describe '#pick' do
+    before do
+      allow(ConnectN::Prompt).to receive(:ask_for_pick).and_return(user_input)
+    end
+
     context 'when the user wants to save the game' do
       let(:user_input) { human_player.save_key }
-      before do
-        allow(ConnectN::PROMPT).to receive(:ask).and_return(user_input)
-      end
 
       it 'returns save_key' do
         pick = human_player.pick
@@ -21,10 +22,6 @@ describe ConnectN::HumanPlayer do
 
     context 'when the user enters a column number' do
       let(:user_input) { '4' }
-
-      before do
-        allow(ConnectN::PROMPT).to receive(:ask).and_return(user_input)
-      end
 
       it 'returns an Integer' do
         input = human_player.pick
