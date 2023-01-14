@@ -3,43 +3,52 @@
 module ConnectN
   module Setup
 
-    def self.ask_for_cols_amount
-      PROMPT.ask 'How many columns do you want in the board?', convert: :int, default: 7
+    def self.ask_for_cols_amount(
+      prompt: 'How many columns do you want in the board?',
+      default: 7
+    )
+      PROMPT.ask prompt, convert: :int, default: default
     end
 
-    def self.ask_for_rows_amount
-      PROMPT.ask 'How many rows do you want in the board?', convert: :int, default: 6
+    def self.ask_for_rows_amount(
+      prompt: 'How many rows do you want in the board?',
+      default: 6 
+    )
+      PROMPT.ask prompt, convert: :int, default: default
     end
 
-    def self.ask_for_min_to_win
-      PROMPT.ask(
-        'Minimum number of aligned similar discs necessary to win : ',
-        convert: :int,
-        default: 4
-      )
+    def self.ask_for_min_to_win(
+      prompt: 'Minimum number of aligned similar discs necessary to win : ',
+      default: 4
+    )
+      PROMPT.ask(prompt, convert: :int, default: default)
     end
 
-    def self.ask_for_difficulty
-      PROMPT.slider 'Difficulty : ', [*0..10], default: 0
+    def self.ask_for_difficulty(prompt: 'Difficulty : ', levels: [*0..10])
+      PROMPT.slider prompt, levels, default: default
     end
 
-    def self.ask_for_mode
-      PROMPT.select('Choose a game mode : ', ['Single Player', 'Multiplayer']).downcase
+    def self.ask_for_mode(prompt: 'Choose a game mode : ')
+      PROMPT.select(prompt, ['Single Player', 'Multiplayer']).downcase
     end
 
-    def self.human_starts?
-      PROMPT.yes? 'Do you wanna play first?'
+    def self.human_starts?(prompt: 'Do you wanna play first?')
+      PROMPT.yes? prompt
     end
 
-    def self.ask_for_disc
-      PROMPT.ask 'Enter a character that will represent your disc : ', default: '🔥' do |q|
+    def self.ask_for_disc(
+      prompt: 'Enter a character that will represent your disc : ',
+      default: '🔥',
+      error_msg: 'Please enter a single character.'
+    )
+      PROMPT.ask prompt, default: default do |q|
         q.validate(/^.?$/)
-        q.messages[:valid?] = 'Please enter a single character.'
+        q.messages[:valid?] = error_msg
       end
     end
 
-    def self.ask_for_human_name
-      PROMPT.ask 'Enter your name : ', default: ENV['USER']
+    def self.ask_for_human_name(prompt: 'Enter your name : ', default: ENV['USER'])
+      PROMPT.ask prompt, default: default
     end
   end
 end
