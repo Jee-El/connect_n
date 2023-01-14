@@ -4,7 +4,7 @@ require_relative '../player/human_player/human_player'
 require_relative '../player/computer_player/computer_player'
 require_relative '../game/game'
 require_relative '../board/board'
-require_relative '../setup/setup'
+require_relative '../prompt/prompt'
 
 module ConnectN
   class Demo
@@ -33,19 +33,19 @@ module ConnectN
     private
 
     def setup_parameters
-      parameters[:human_players].push [Setup.ask_for_human_name, Setup.ask_for_disc]
+      parameters[:human_players].push [Prompt.ask_for_human_name, Prompt.ask_for_disc]
 
-      parameters[:cols_amount] = Setup.ask_for_cols_amount
-      parameters[:rows_amount] = Setup.ask_for_rows_amount
-      parameters[:min_to_win] = Setup.ask_for_min_to_win
+      parameters[:cols_amount] = Prompt.ask_for_cols_amount
+      parameters[:rows_amount] = Prompt.ask_for_rows_amount
+      parameters[:min_to_win] = Prompt.ask_for_min_to_win
 
-      parameters[:mode] = Setup.ask_for_mode
+      parameters[:mode] = Prompt.ask_for_mode
 
       if parameters[:mode] == 'multiplayer'
-        parameters[:human_players].push [Setup.ask_for_human_name, Setup.ask_for_disc]
+        parameters[:human_players].push [Prompt.ask_for_human_name, Prompt.ask_for_disc]
       else
-        parameters[:difficulty] = Setup.ask_for_difficulty
-        parameters[:human_starts?] = Setup.human_starts?
+        parameters[:difficulty] = Prompt.ask_for_difficulty
+        parameters[:human_starts?] = Prompt.human_starts?
       end
     end
 
