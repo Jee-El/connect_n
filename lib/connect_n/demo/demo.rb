@@ -33,7 +33,7 @@ module ConnectN
     private
 
     def setup_parameters
-      parameters[:human_players].push [Prompt.ask_for_human_name, Prompt.ask_for_disc]
+      parameters[:human_players].push [Prompt.ask_for_name, Prompt.ask_for_disc]
 
       parameters[:cols_amount] = Prompt.ask_for_cols_amount
       parameters[:rows_amount] = Prompt.ask_for_rows_amount
@@ -42,7 +42,7 @@ module ConnectN
       parameters[:mode] = Prompt.ask_for_mode
 
       if parameters[:mode] == 'multiplayer'
-        parameters[:human_players].push [Prompt.ask_for_human_name, Prompt.ask_for_disc]
+        parameters[:human_players].push [Prompt.ask_for_name, Prompt.ask_for_disc]
       else
         parameters[:difficulty] = Prompt.ask_for_difficulty
         parameters[:human_starts?] = Prompt.starts?
