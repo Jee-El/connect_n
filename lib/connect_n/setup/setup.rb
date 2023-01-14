@@ -46,7 +46,7 @@ module ConnectN
       end
     end
 
-    def self.ask_for_human_name(prompt: 'Enter your name : ', default: ENV['USER'])
+    def self.ask_for_name(prompt: 'Enter your name : ', default: ENV['USER'])
       PROMPT.ask prompt, default: default
     end
   end
