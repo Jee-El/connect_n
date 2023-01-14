@@ -4,6 +4,7 @@ require_relative '../player/human_player/human_player'
 require_relative '../player/computer_player/computer_player'
 require_relative '../game/game'
 require_relative '../board/board'
+require_relative '../setup/setup'
 
 module ConnectN
   class Demo
@@ -32,59 +33,20 @@ module ConnectN
     private
 
     def setup_parameters
-      parameters[:human_players].push [human_name, disc]
+      parameters[:human_players].push [Setup.ask_for_human_name, Setup.ask_for_disc]
 
-      parameters[:cols_amount] = cols_amount
-      parameters[:rows_amount] = rows_amount
-      parameters[:min_to_win] = min_to_win
+      parameters[:cols_amount] = Setup.ask_for_cols_amount
+      parameters[:rows_amount] = Setup.ask_for_rows_amount
+      parameters[:min_to_win] = Setup.ask_for_min_to_win
 
-      parameters[:mode] = mode
+      parameters[:mode] = Setup.ask_for_mode
 
       if parameters[:mode] == 'multiplayer'
-        parameters[:human_players].push [human_name => disc]
+        parameters[:human_players].push [Setup.ask_for_human_name, Setup.ask_for_disc]
       else
-        parameters[:difficulty] = difficulty
-        parameters[:human_starts?] = human_starts?
+        parameters[:difficulty] = Setup.ask_for_difficulty
+        parameters[:human_starts?] = Setup.human_starts?
       end
-    end
-
-    def cols_amount
-      PROMPT.ask 'How many columns do you want in the board?', convert: :int, default: 7
-    end
-
-    def rows_amount
-      PROMPT.ask 'How many rows do you want in the board?', convert: :int, default: 6
-    end
-
-    def min_to_win
-      PROMPT.ask(
-        'Minimum number of aligned similar discs necessary to win : ',
-        convert: :int,
-        default: 4
-      )
-    end
-
-    def difficulty
-      PROMPT.slider 'Difficulty : ', [*0..10], default: 0
-    end
-
-    def mode
-      PROMPT.select('Choose a game mode : ', ['Single Player', 'Multiplayer']).downcase
-    end
-
-    def human_starts?
-      PROMPT.yes? 'Do you wanna play first?'
-    end
-
-    def disc
-      PROMPT.ask 'Enter a character that will represent your disc : ', default: '🔥' do |q|
-        q.validate(/^.?$/)
-        q.messages[:valid?] = 'Please enter a single character.'
-      end
-    end
-
-    def human_name
-      PROMPT.ask 'Enter your name : ', default: ENV['USER']
     end
 
     def multiplayer_game
@@ -95,8 +57,8 @@ module ConnectN
       )
       Game.new(
         board: board,
-        first_player: players.first,
-        second_player: players.last,
+        first_player: human_players.first,
+        second_player: human_players.last,
         min_to_win: parameters[:min_to_win]
       )
     end
