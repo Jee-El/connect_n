@@ -27,7 +27,7 @@ module ConnectN
       PROMPT.ask(prompt, convert: :int, default: default)
     end
 
-    def self.ask_for_difficulty(prompt: 'Difficulty : ', levels: [*0..10])
+    def self.ask_for_difficulty(prompt: 'Difficulty : ', levels: [*0..10], default: 5)
       PROMPT.slider prompt, levels, default: default
     end
 
@@ -35,7 +35,7 @@ module ConnectN
       PROMPT.select(prompt, ['Single Player', 'Multiplayer']).downcase
     end
 
-    def self.human_starts?(prompt: 'Do you wanna play first?')
+    def self.starts?(prompt: 'Do you wanna play first?')
       PROMPT.yes? prompt
     end
 

@@ -45,7 +45,7 @@ module ConnectN
         parameters[:human_players].push [Prompt.ask_for_human_name, Prompt.ask_for_disc]
       else
         parameters[:difficulty] = Prompt.ask_for_difficulty
-        parameters[:human_starts?] = Prompt.human_starts?
+        parameters[:human_starts?] = Prompt.starts?
       end
     end
 
