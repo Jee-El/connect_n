@@ -14,10 +14,10 @@ module ConnectN
       @parameters = { human_players: [] }
     end
 
-    def launch
-      if !Game.games('connect_n_saved_games.yaml').empty? && Game.resume?
+    def launch(yaml_fn)
+      if !Game.games(yaml_fn).empty? && Game.resume?
         game_name = Game.select_game_name
-        @game = Game.load game_name, 'connect_n_saved_games.yaml'
+        @game = Game.load game_name, yaml_fn
         return Game.resume game
       end
 
@@ -27,7 +27,7 @@ module ConnectN
               else
                 single_player_game
               end
-      game.play('connect_n_saved_games.yaml')
+      game.play(yaml_fn)
     end
 
     private
