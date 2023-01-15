@@ -73,7 +73,7 @@ gem install connect_n
     - [4.7.5 ::ask_for_mode](#475-ask_for_mode)
     - [4.7.6 ::ask_for_name](#476-ask_for_name)
     - [4.7.7 ::ask_for_pick](#477-ask_for_pick)
-    - [4.7.8 ::ask_for_rows_amount][#478-ask_for_rows_amount]
+    - [4.7.8 ::ask_for_rows_amount](#478-ask_for_rows_amount)
     - [4.7.9 ::starts?](#479-human_starts?)
   - [4.8 Winnable](#47-winnable)
     - [4.8.1 #win?](#471-win?)
